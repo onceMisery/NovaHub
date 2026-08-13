@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">NovaHub 应用图标</title>
+  <desc id="desc">三颗能力星沿轨迹汇聚，在中心形成一颗新星。</desc>
+  <rect x="20" y="20" width="472" height="472" rx="104" fill="#202327"/>
+  <path d="M112 143C178 143 226 172 273 221" fill="none" stroke="#6EA8FF" stroke-width="22" stroke-linecap="round"/>
+  <path d="M92 256H266" fill="none" stroke="#6EA8FF" stroke-width="22" stroke-linecap="round"/>
+  <path d="M112 369C178 369 226 340 273 291" fill="none" stroke="#6EA8FF" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="105" cy="143" r="24" fill="#57C995"/>
+  <circle cx="85" cy="256" r="24" fill="#F2B35B"/>
+  <circle cx="105" cy="369" r="24" fill="#FF7B7B"/>
+  <path d="M337 129C351 203 397 243 464 256C397 269 351 309 337 383C323 309 277 269 210 256C277 243 323 203 337 129Z" fill="#F5F7FA"/>
+  <circle cx="337" cy="256" r="25" fill="#6EA8FF"/>
+</svg>

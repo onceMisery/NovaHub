@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">NovaHub 星汇标记</title>
+  <desc id="desc">三颗星汇入中心并形成新星。</desc>
+  <path d="M10 17C20 17 27 21 34 28M7 32H33M10 47C20 47 27 43 34 36" fill="none" stroke="#6EA8FF" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="9" cy="17" r="4" fill="#57C995"/>
+  <circle cx="6" cy="32" r="4" fill="#F2B35B"/>
+  <circle cx="9" cy="47" r="4" fill="#FF7B7B"/>
+  <path d="M43 12C45 23 51 30 61 32C51 34 45 41 43 52C41 41 35 34 25 32C35 30 41 23 43 12Z" fill="#F5F7FA"/>
+  <circle cx="43" cy="32" r="3.5" fill="#6EA8FF"/>
+</svg>

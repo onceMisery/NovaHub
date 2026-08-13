@@ -1,0 +1,52 @@
+{
+  "runId": "novahub-figma-20260812",
+  "fileKey": "WyTYbVDv3Ws0hAxEl8kytl",
+  "fileName": "NovaHub Desktop Prototype",
+  "fileUrl": "https://www.figma.com/design/WyTYbVDv3Ws0hAxEl8kytl",
+  "planKey": "team::1619590748886435530",
+  "phase": "phase2-partial",
+  "step": "starter-limit-handoff",
+  "entities": {
+    "pages": {
+      "00 Foundations": "0:1",
+      "01 Components": "6:4",
+      "02 Prototype": "6:5"
+    },
+    "collections": {},
+    "variables": {},
+    "components": {},
+    "screens": {
+      "Foundations root": "7:2"
+    }
+  },
+  "completedSteps": [
+    "phase0",
+    "account-plan-selection",
+    "file-created",
+    "empty-file-scan",
+    "three-page-skeleton",
+    "foundations-documentation",
+    "local-interactive-prototype",
+    "brand-assets",
+    "component-specimen",
+    "deterministic-board-routes",
+    "figma-sync-manifest"
+  ],
+  "pendingValidations": [
+    "foundations-final-screenshot-after-layout-fix",
+    "components-page",
+    "prototype-page",
+    "brand-assets-to-figma"
+  ],
+  "notes": [
+    "Inter is available in Figma and is used for the prototype.",
+    "Subscribed libraries were searched; their component APIs and density do not match NovaHub, so local components are preferred.",
+    "Code implementation remains Rust + Slint with platform system fonts.",
+    "The Starter plan permits at most three pages and one variable mode; the file structure was compressed without reducing prototype scope.",
+    "Figma local variable creation was unavailable in the current plugin context, so Foundations uses explicit documented token values.",
+    "The Starter MCP call limit was reached after Foundations layout correction; local interactive prototype evidence is the current visual source of truth.",
+    "NovaHub brand assets use three capability stars converging into a central Nova and are pending Figma sync.",
+    "prototype/components.html covers the 15 required official component types and their applicable states.",
+    "prototype/figma-sync-manifest.json defines ten deterministic boards, existing page IDs, evidence files and flow edges for direct synchronization."
+  ]
+}

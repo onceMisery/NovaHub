@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">NovaHub 单色系统图标</title>
+  <desc id="desc">三条轨迹汇聚形成新星，颜色继承自宿主。</desc>
+  <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 17C20 17 27 21 34 28M7 32H33M10 47C20 47 27 43 34 36"/>
+    <circle cx="9" cy="17" r="3" fill="currentColor" stroke="none"/>
+    <circle cx="6" cy="32" r="3" fill="currentColor" stroke="none"/>
+    <circle cx="9" cy="47" r="3" fill="currentColor" stroke="none"/>
+    <path d="M43 12C45 23 51 30 61 32C51 34 45 41 43 52C41 41 35 34 25 32C35 30 41 23 43 12Z" fill="currentColor" stroke="none"/>
+  </g>
+</svg>

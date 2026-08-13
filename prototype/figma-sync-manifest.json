@@ -1,0 +1,492 @@
+{
+    "schemaVersion":  2,
+    "file":  {
+                 "fileKey":  "WyTYbVDv3Ws0hAxEl8kytl",
+                 "url":  "https://www.figma.com/design/WyTYbVDv3Ws0hAxEl8kytl",
+                 "pages":  {
+                               "foundations":  {
+                                                   "name":  "00 Foundations",
+                                                   "nodeId":  "0:1"
+                                               },
+                               "components":  {
+                                                  "name":  "01 Components",
+                                                  "nodeId":  "6:4"
+                                              },
+                               "prototype":  {
+                                                 "name":  "02 Prototype",
+                                                 "nodeId":  "6:5"
+                                             }
+                           }
+             },
+    "baseUrl":  "http://127.0.0.1:4173/prototype/",
+    "sources":  [
+                    {
+                        "id":  "brand",
+                        "destination":  "00 Foundations / Brand",
+                        "source":  "../assets/brand/novahub-icon-specimen.svg",
+                        "evidence":  "../work/novahub-icon-specimen.png"
+                    },
+                    {
+                        "id":  "components",
+                        "destination":  "01 Components",
+                        "source":  "components.html",
+                        "evidence":  "../work/novahub-components.png"
+                    }
+                ],
+    "boards":  [
+                   {
+                       "id":  "L1",
+                       "name":  "Launcher / Idle",
+                       "query":  "?view=launcher\u0026state=idle",
+                       "width":  720,
+                       "height":  496,
+                       "destination":  "02 Prototype / Launcher",
+                       "evidence":  "../work/board-L1.png"
+                   },
+                   {
+                       "id":  "L2",
+                       "name":  "Launcher / Results",
+                       "query":  "?view=launcher\u0026state=results\u0026query=code",
+                       "width":  720,
+                       "height":  496,
+                       "destination":  "02 Prototype / Launcher",
+                       "evidence":  "../work/board-L2.png"
+                   },
+                   {
+                       "id":  "L3",
+                       "name":  "Launcher / Action Panel",
+                       "query":  "?view=launcher\u0026state=actions\u0026query=code",
+                       "width":  720,
+                       "height":  496,
+                       "destination":  "02 Prototype / Launcher",
+                       "evidence":  "../work/board-L3.png"
+                   },
+                   {
+                       "id":  "L4",
+                       "name":  "Launcher / Dark",
+                       "query":  "?view=launcher\u0026state=actions\u0026query=code\u0026theme=dark",
+                       "width":  720,
+                       "height":  496,
+                       "destination":  "02 Prototype / Launcher",
+                       "evidence":  "../work/board-L4.png"
+                   },
+                   {
+                       "id":  "P1",
+                       "name":  "Plugin View / Form",
+                       "query":  "?view=translator\u0026state=form",
+                       "width":  760,
+                       "height":  568,
+                       "destination":  "02 Prototype / Plugin View",
+                       "evidence":  "../work/board-P1.png"
+                   },
+                   {
+                       "id":  "P2",
+                       "name":  "Plugin View / Result",
+                       "query":  "?view=translator\u0026state=result",
+                       "width":  760,
+                       "height":  568,
+                       "destination":  "02 Prototype / Plugin View",
+                       "evidence":  "../work/board-P2.png"
+                   },
+                   {
+                       "id":  "P3",
+                       "name":  "Plugin View / Error",
+                       "query":  "?view=translator\u0026state=error",
+                       "width":  760,
+                       "height":  568,
+                       "destination":  "02 Prototype / Plugin View",
+                       "evidence":  "../work/board-P3.png"
+                   },
+                   {
+                       "id":  "M1",
+                       "name":  "Plugin Manager / List",
+                       "query":  "?view=plugins\u0026state=list",
+                       "width":  960,
+                       "height":  680,
+                       "destination":  "02 Prototype / Plugin Manager",
+                       "evidence":  "../work/board-M1.png"
+                   },
+                   {
+                       "id":  "M2",
+                       "name":  "Plugin Manager / Detail",
+                       "query":  "?view=plugins\u0026state=detail",
+                       "width":  960,
+                       "height":  680,
+                       "destination":  "02 Prototype / Plugin Manager",
+                       "evidence":  "../work/board-M2.png"
+                   },
+                   {
+                       "id":  "M3",
+                       "name":  "Plugin Manager / Uninstall",
+                       "query":  "?view=plugins\u0026state=uninstall",
+                       "width":  960,
+                       "height":  680,
+                       "destination":  "02 Prototype / Plugin Manager",
+                       "evidence":  "../work/board-M3.png"
+                   }
+               ],
+    "v1Boards":  [
+                     {
+                         "id":  "C1",
+                         "name":  "Command Center / Idle",
+                         "query":  "?view=command\u0026state=idle",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Command Center",
+                         "evidence":  "../work/board-C1.png"
+                     },
+                     {
+                         "id":  "C2",
+                         "name":  "Command Center / Mixed Results",
+                         "query":  "?view=command\u0026state=results",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Command Center",
+                         "evidence":  "../work/board-C2.png"
+                     },
+                     {
+                         "id":  "C3",
+                         "name":  "Command Center / Preview",
+                         "query":  "?view=command\u0026state=preview",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Command Center",
+                         "evidence":  "../work/board-C3.png"
+                     },
+                     {
+                         "id":  "C4",
+                         "name":  "Command Center / Action Panel",
+                         "query":  "?view=command\u0026state=actions",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Command Center",
+                         "evidence":  "../work/board-C4.png"
+                     },
+                     {
+                         "id":  "C5",
+                         "name":  "Command Center / Partial Error",
+                         "query":  "?view=command\u0026state=partial",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Command Center",
+                         "evidence":  "../work/board-C5.png"
+                     },
+                     {
+                         "id":  "B1",
+                         "name":  "Clipboard / History",
+                         "query":  "?view=clipboard\u0026state=history",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Clipboard",
+                         "evidence":  "../work/board-B1.png"
+                     },
+                     {
+                         "id":  "B2",
+                         "name":  "Clipboard / Image Preview",
+                         "query":  "?view=clipboard\u0026state=preview",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Clipboard",
+                         "evidence":  "../work/board-B2.png"
+                     },
+                     {
+                         "id":  "B3",
+                         "name":  "Clipboard / Sensitive",
+                         "query":  "?view=clipboard\u0026state=sensitive",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Clipboard",
+                         "evidence":  "../work/board-B3.png"
+                     },
+                     {
+                         "id":  "B4",
+                         "name":  "Clipboard / Clear Confirm",
+                         "query":  "?view=clipboard\u0026state=clear",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Clipboard",
+                         "evidence":  "../work/board-B4.png"
+                     },
+                     {
+                         "id":  "F1",
+                         "name":  "File Search / Results",
+                         "query":  "?view=files\u0026state=results",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / File Search",
+                         "evidence":  "../work/board-F1.png"
+                     },
+                     {
+                         "id":  "F2",
+                         "name":  "File Search / Filters",
+                         "query":  "?view=files\u0026state=filters",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / File Search",
+                         "evidence":  "../work/board-F2.png"
+                     },
+                     {
+                         "id":  "F3",
+                         "name":  "File Search / Preview",
+                         "query":  "?view=files\u0026state=preview",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / File Search",
+                         "evidence":  "../work/board-F3.png"
+                     },
+                     {
+                         "id":  "F4",
+                         "name":  "File Search / Index Offline",
+                         "query":  "?view=files\u0026state=offline",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / File Search",
+                         "evidence":  "../work/board-F4.png"
+                     },
+                     {
+                         "id":  "Q1",
+                         "name":  "Quicklinks \u0026 Snippets / Library",
+                         "query":  "?view=library\u0026state=list",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Quicklinks \u0026 Snippets",
+                         "evidence":  "../work/board-Q1.png"
+                     },
+                     {
+                         "id":  "Q2",
+                         "name":  "Quicklinks \u0026 Snippets / Parameters",
+                         "query":  "?view=library\u0026state=parameters",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Quicklinks \u0026 Snippets",
+                         "evidence":  "../work/board-Q2.png"
+                     },
+                     {
+                         "id":  "Q3",
+                         "name":  "Quicklinks \u0026 Snippets / Edit",
+                         "query":  "?view=library\u0026state=edit",
+                         "width":  840,
+                         "height":  640,
+                         "destination":  "02 Prototype / Quicklinks \u0026 Snippets",
+                         "evidence":  "../work/board-Q3.png"
+                     },
+                     {
+                         "id":  "W1",
+                         "name":  "Window Manager / Layout Picker",
+                         "query":  "?view=windows\u0026state=layouts",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Window Manager",
+                         "evidence":  "../work/board-W1.png"
+                     },
+                     {
+                         "id":  "W2",
+                         "name":  "Window Manager / Multi-display",
+                         "query":  "?view=windows\u0026state=displays",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Window Manager",
+                         "evidence":  "../work/board-W2.png"
+                     },
+                     {
+                         "id":  "W3",
+                         "name":  "Window Manager / Permission",
+                         "query":  "?view=windows\u0026state=permission",
+                         "width":  760,
+                         "height":  560,
+                         "destination":  "02 Prototype / Window Manager",
+                         "evidence":  "../work/board-W3.png"
+                     },
+                     {
+                         "id":  "D1",
+                         "name":  "Developer Toolkit / JSON Success",
+                         "query":  "?view=developer\u0026state=json",
+                         "width":  880,
+                         "height":  640,
+                         "destination":  "02 Prototype / Developer Toolkit",
+                         "evidence":  "../work/board-D1.png"
+                     },
+                     {
+                         "id":  "D2",
+                         "name":  "Developer Toolkit / JSON Error",
+                         "query":  "?view=developer\u0026state=json-error",
+                         "width":  880,
+                         "height":  640,
+                         "destination":  "02 Prototype / Developer Toolkit",
+                         "evidence":  "../work/board-D2.png"
+                     },
+                     {
+                         "id":  "D3",
+                         "name":  "Developer Toolkit / Encoding",
+                         "query":  "?view=developer\u0026state=encoding",
+                         "width":  880,
+                         "height":  640,
+                         "destination":  "02 Prototype / Developer Toolkit",
+                         "evidence":  "../work/board-D3.png"
+                     },
+                     {
+                         "id":  "D4",
+                         "name":  "Developer Toolkit / Color",
+                         "query":  "?view=developer\u0026state=color",
+                         "width":  880,
+                         "height":  640,
+                         "destination":  "02 Prototype / Developer Toolkit",
+                         "evidence":  "../work/board-D4.png"
+                     },
+                     {
+                         "id":  "D5",
+                         "name":  "Developer Toolkit / QR",
+                         "query":  "?view=developer\u0026state=qr",
+                         "width":  880,
+                         "height":  640,
+                         "destination":  "02 Prototype / Developer Toolkit",
+                         "evidence":  "../work/board-D5.png"
+                     },
+                     {
+                         "id":  "T1",
+                         "name":  "Translation / Input",
+                         "query":  "?view=translation\u0026state=input",
+                         "width":  760,
+                         "height":  568,
+                         "destination":  "02 Prototype / Translation",
+                         "evidence":  "../work/board-T1.png"
+                     },
+                     {
+                         "id":  "T2",
+                         "name":  "Translation / Result",
+                         "query":  "?view=translation\u0026state=result",
+                         "width":  760,
+                         "height":  568,
+                         "destination":  "02 Prototype / Translation",
+                         "evidence":  "../work/board-T2.png"
+                     },
+                     {
+                         "id":  "T3",
+                         "name":  "Translation / Offline Error",
+                         "query":  "?view=translation\u0026state=error",
+                         "width":  760,
+                         "height":  568,
+                         "destination":  "02 Prototype / Translation",
+                         "evidence":  "../work/board-T3.png"
+                     },
+                     {
+                         "id":  "G1",
+                         "name":  "Gallery / Discover",
+                         "query":  "?view=gallery\u0026state=discover",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Gallery",
+                         "evidence":  "../work/board-G1.png"
+                     },
+                     {
+                         "id":  "G2",
+                         "name":  "Gallery / Detail",
+                         "query":  "?view=gallery\u0026state=detail",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Gallery",
+                         "evidence":  "../work/board-G2.png"
+                     },
+                     {
+                         "id":  "G3",
+                         "name":  "Gallery / Permission Diff",
+                         "query":  "?view=gallery\u0026state=permissions",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Gallery",
+                         "evidence":  "../work/board-G3.png"
+                     },
+                     {
+                         "id":  "G4",
+                         "name":  "Gallery / Uninstall",
+                         "query":  "?view=gallery\u0026state=uninstall",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Gallery",
+                         "evidence":  "../work/board-G4.png"
+                     },
+                     {
+                         "id":  "R1",
+                         "name":  "Migration / Source",
+                         "query":  "?view=migration\u0026state=source",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Migration",
+                         "evidence":  "../work/board-R1.png"
+                     },
+                     {
+                         "id":  "R2",
+                         "name":  "Migration / Scan",
+                         "query":  "?view=migration\u0026state=scan",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Migration",
+                         "evidence":  "../work/board-R2.png"
+                     },
+                     {
+                         "id":  "R3",
+                         "name":  "Migration / Review",
+                         "query":  "?view=migration\u0026state=review",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Migration",
+                         "evidence":  "../work/board-R3.png"
+                     },
+                     {
+                         "id":  "R4",
+                         "name":  "Migration / Result",
+                         "query":  "?view=migration\u0026state=result",
+                         "width":  960,
+                         "height":  680,
+                         "destination":  "02 Prototype / Migration",
+                         "evidence":  "../work/board-R4.png"
+                     }
+                 ],
+    "flows":  [
+                  {
+                      "from":  "L1",
+                      "event":  "input",
+                      "to":  "L2"
+                  },
+                  {
+                      "from":  "L2",
+                      "event":  "CmdOrCtrl+K",
+                      "to":  "L3"
+                  },
+                  {
+                      "from":  "L3",
+                      "event":  "Escape",
+                      "to":  "L2"
+                  },
+                  {
+                      "from":  "P1",
+                      "event":  "submit",
+                      "to":  "P2"
+                  },
+                  {
+                      "from":  "P3",
+                      "event":  "retry",
+                      "to":  "P1"
+                  },
+                  {
+                      "from":  "M1",
+                      "event":  "selectPlugin",
+                      "to":  "M2"
+                  },
+                  {
+                      "from":  "M2",
+                      "event":  "uninstall",
+                      "to":  "M3"
+                  },
+                  {
+                      "from":  "M3",
+                      "event":  "cancel",
+                      "to":  "M2"
+                  },
+                  {
+                      "from":  "M3",
+                      "event":  "confirm",
+                      "to":  "M1"
+                  }
+              ]
+}

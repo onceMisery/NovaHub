@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NovaHub Desktop Prototype</title>
+  <link rel="icon" href="../assets/brand/novahub-app-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="v1.css">
+</head>
+<body>
+  <main class="prototype-shell">
+    <header class="prototype-bar">
+      <div class="brand-mark" aria-hidden="true"><img src="../assets/brand/novahub-mark.svg" alt=""></div>
+      <div>
+        <strong>NovaHub</strong>
+        <span>Desktop interaction prototype</span>
+      </div>
+      <nav aria-label="原型视图">
+        <button class="view-tab active" data-view="launcher">启动器</button>
+        <button class="view-tab" data-view="translator">插件视图</button>
+        <button class="view-tab" data-view="plugins">插件管理</button>
+      </nav>
+      <button class="theme-button icon-button" id="themeButton" aria-label="切换深浅色" title="切换深浅色">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg>
+      </button>
+    </header>
+
+    <section class="stage" id="launcherView" data-screen="launcher">
+      <div class="desktop-context">
+        <div class="context-label"><span>当前工作区</span><strong>Design review · 10:42</strong></div>
+        <div class="context-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+      <div class="launcher-window window" role="dialog" aria-label="NovaHub 启动器">
+        <div class="search-row">
+          <svg class="leading-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input id="launcherSearch" aria-label="搜索应用、文件和命令" autocomplete="off" placeholder="搜索应用、文件和命令...">
+          <kbd>⌘ Space</kbd>
+        </div>
+        <div class="result-area">
+          <div class="section-label" id="resultLabel">最近使用</div>
+          <div class="result-list" id="resultList" role="listbox" aria-label="搜索结果"></div>
+          <aside class="action-panel" id="actionPanel" aria-label="操作面板">
+            <div class="panel-title"><span>操作</span><kbd>Esc</kbd></div>
+            <button class="action-row selected"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span>打开</span><kbd>↵</kbd></button>
+            <button class="action-row"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"></path></svg><span>打开所在位置</span><kbd>⌘↵</kbd></button>
+            <button class="action-row"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V4H4v12h4"></path></svg><span>复制路径</span><kbd>⌘⇧C</kbd></button>
+            <div class="action-divider"></div>
+            <button class="action-row danger"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M8 10v7M12 10v7M16 10v7M5 6l1 15h12l1-15"></path></svg><span>移到废纸篓</span></button>
+          </aside>
+        </div>
+        <footer class="shortcut-bar">
+          <span><kbd>↑↓</kbd> 选择</span><span><kbd>↵</kbd> 打开</span><span><kbd>⌘ K</kbd> 操作</span>
+          <span class="provider-status"><i></i> 5 个提供器就绪</span>
+        </footer>
+      </div>
+    </section>
+
+    <section class="stage hidden" id="translatorView" data-screen="translator">
+      <div class="plugin-window window">
+        <header class="navigation-header">
+          <button class="icon-button" aria-label="返回" title="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div class="plugin-icon translate-icon">文</div>
+          <div><strong>翻译</strong><span>NovaHub 官方插件</span></div>
+          <span class="permission-chip"><i></i> translate.example.com</span>
+        </header>
+        <div class="translator-body">
+          <div class="translator-form" id="translatorForm">
+            <div class="language-row">
+              <label>源语言<select id="sourceLang"><option>自动检测</option><option>简体中文</option><option>English</option></select></label>
+              <button class="swap-button icon-button" aria-label="交换语言" title="交换语言"><svg viewBox="0 0 24 24"><path d="m7 7-4 4 4 4M3 11h14M17 17l4-4-4-4M21 13H7"></path></svg></button>
+              <label>目标语言<select id="targetLang"><option>English</option><option>简体中文</option><option>日本語</option></select></label>
+            </div>
+            <label class="text-field">待翻译内容<textarea id="translateInput">NovaHub 让每一次查找都保持快速、安静和可控。</textarea><span>27 / 5,000</span></label>
+            <div class="form-actions"><button class="text-button" id="clearTranslate">清空</button><button class="primary-button" id="translateButton"><svg viewBox="0 0 24 24"><path d="M5 8h8M9 4v4M7 8c0 4 2 7 6 9M12 8c-1 4-4 7-8 9M15 13h6M18 10v3M16 21l2-8 2 8"></path></svg><span>翻译</span><kbd>⌘↵</kbd></button></div>
+          </div>
+          <div class="translate-result hidden" id="translateResult">
+            <div class="result-meta"><span>简体中文 → English</span><button class="icon-button" id="copyTranslation" aria-label="复制译文" title="复制译文"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V4H4v12h4"></path></svg></button></div>
+            <p>NovaHub keeps every search fast, quiet, and under your control.</p>
+            <div class="translation-source"><span>原文</span>NovaHub 让每一次查找都保持快速、安静和可控。</div>
+            <div class="result-actions"><button class="text-button" id="editTranslation">重新编辑</button><button class="primary-button" id="copyTranslation2">复制译文</button></div>
+          </div>
+          <div class="plugin-error hidden" id="pluginError">
+            <div class="error-symbol"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg></div>
+            <strong>请求超时</strong><p>翻译服务暂时没有响应。请检查网络后重试。</p>
+            <div><button class="text-button" id="errorBack">返回</button><button class="primary-button" id="retryTranslate">重试</button></div>
+          </div>
+        </div>
+        <footer class="shortcut-bar"><span><kbd>Tab</kbd> 切换字段</span><span><kbd>⌘ ↵</kbd> 提交</span><span><kbd>Esc</kbd> 返回</span><span class="provider-status"><i></i> 权限范围受宿主管理</span></footer>
+      </div>
+      <div class="toast hidden" id="translationToast"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg><span>译文已复制</span></div>
+    </section>
+
+    <section class="stage hidden" id="pluginsView" data-screen="plugins">
+      <div class="settings-window window">
+        <aside class="settings-nav">
+          <div class="settings-brand"><div class="brand-mark small"><img src="../assets/brand/novahub-mark.svg" alt=""></div><strong>NovaHub</strong></div>
+          <button><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.8 1.8 0 0 0 .4 2l.1.1-2.8 2.8-.1-.1a1.8 1.8 0 0 0-2-.4 1.8 1.8 0 0 0-1.1 1.7V21h-4v-.1A1.8 1.8 0 0 0 8.8 19a1.8 1.8 0 0 0-2 .4l-.1.1-2.8-2.8.1-.1a1.8 1.8 0 0 0 .4-2A1.8 1.8 0 0 0 2.7 13H2V9h.7a1.8 1.8 0 0 0 1.7-1.1 1.8 1.8 0 0 0-.4-2l-.1-.1L6.7 3l.1.1a1.8 1.8 0 0 0 2 .4A1.8 1.8 0 0 0 9.9 2H14v.1a1.8 1.8 0 0 0 1.1 1.7 1.8 1.8 0 0 0 2-.4l.1-.1L20 6.1l-.1.1a1.8 1.8 0 0 0-.4 2 1.8 1.8 0 0 0 1.7 1.1h.7v4h-.7a1.8 1.8 0 0 0-1.8 1.7Z"></path></svg>通用</button>
+          <button><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>搜索</button>
+          <button class="active"><svg viewBox="0 0 24 24"><path d="m12 2 3 4 5 1-3 4 .5 5-5.5-2-5.5 2 .5-5-3-4 5-1z"></path></svg>插件</button>
+          <button><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"></path></svg>快捷键</button>
+          <div class="nav-spacer"></div>
+          <button><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>关于</button>
+        </aside>
+        <div class="settings-content">
+          <header class="settings-header"><div><strong>插件</strong><span>管理已安装能力与权限</span></div><button class="secondary-button"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>从本地安装</button></header>
+          <div class="plugin-list-view" id="pluginListView">
+            <div class="settings-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="pluginSearch" placeholder="搜索已安装插件" aria-label="搜索已安装插件"><kbd>⌘F</kbd></div>
+            <div class="list-summary"><span>已安装</span><span id="pluginCount">3 个插件</span></div>
+            <div class="plugin-list" id="pluginList"></div>
+          </div>
+          <div class="plugin-detail hidden" id="pluginDetail">
+            <button class="back-link" id="backToPlugins"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg>返回插件列表</button>
+            <div class="detail-heading"><div class="plugin-icon translate-icon">文</div><div><strong>翻译</strong><span>NovaHub Labs · 1.4.2</span></div><label class="switch"><input type="checkbox" id="pluginEnabled" checked><span></span><em>已启用</em></label></div>
+            <section class="detail-section"><h2>命令</h2><div class="command-row"><div class="command-symbol">⌘</div><div><strong>翻译文本</strong><span>打开翻译表单</span></div><kbd>⌘ ⇧ T</kbd></div><div class="command-row"><div class="command-symbol">A</div><div><strong>翻译所选内容</strong><span>读取当前选中的文本</span></div><kbd>无快捷键</kbd></div></section>
+            <section class="detail-section"><h2>权限</h2><div class="permission-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg><div><strong>网络</strong><span>仅允许访问 translate.example.com</span></div><span class="allowed">已允许</span></div><div class="permission-row"><svg viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="16" rx="2"></rect><path d="M9 4V2h6v2"></path></svg><div><strong>剪贴板</strong><span>仅在执行“复制译文”时写入</span></div><span class="allowed">使用时</span></div><div class="permission-row"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"></path></svg><div><strong>文件</strong><span>不允许访问本地文件</span></div><span>未授权</span></div></section>
+            <section class="detail-section danger-zone"><div><h2>卸载插件</h2><p>卸载后，插件代码和 NovaHub 管理的本地数据将被删除。</p></div><button class="danger-button" id="openUninstall"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M8 10v7M12 10v7M16 10v7M5 6l1 15h12l1-15"></path></svg>卸载...</button></section>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop hidden" id="uninstallModal">
+        <div class="dialog" role="alertdialog" aria-labelledby="uninstallTitle"><div class="dialog-danger"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg></div><h2 id="uninstallTitle">卸载“翻译”？</h2><p>NovaHub 将删除此插件拥有的以下本地内容，此操作不可撤销。</p><ul><li>插件代码与设置</li><li>缓存与本地数据</li><li>凭据与已授予权限</li></ul><div class="external-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>外部文件和远端服务中的数据不在删除范围内。</div><div class="dialog-actions"><button class="secondary-button" id="cancelUninstall">取消</button><button class="danger-button" id="confirmUninstall">卸载并删除数据</button></div></div>
+      </div>
+      <div class="toast hidden" id="uninstallToast"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg><span>“翻译”已卸载，本地数据已删除</span></div>
+    </section>
+
+    <section class="stage hidden" id="v1View" data-screen="v1">
+      <div id="v1BoardMount"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
