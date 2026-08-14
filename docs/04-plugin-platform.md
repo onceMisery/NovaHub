@@ -27,6 +27,7 @@ version = "1.2.0"
 plugin_api = ">=1.1, <2.0"
 entry = "plugin.wasm"
 platforms = ["windows", "macos"]
+kind = "command"
 
 [[commands]]
 id = "translate"
@@ -40,6 +41,8 @@ clipboard = ["read", "write"]
 ```
 
 插件 ID 使用反向域名格式，安装后不可更改。命令 ID 只需在插件内唯一；宿主 canonical ID 为 `plugin_id/command_id`。
+
+`kind` 缺省为 `command`，保持旧包兼容。桌面宠物使用 `kind = "desktop-pet"`，可以是只包含 `pet.json` 与受限资源的声明式包并省略 `entry`；若同时提供普通命令，仍通过同一 WIT、权限和按需 Plugin Host 运行。宠物浮层、显示/隐藏、位置、全局快捷键和快捷动作栏由宿主拥有，完整契约见 `docs/aegis/specs/2026-08-14-desktop-pet-plugin-design.md`。
 
 ## 3. WIT 世界
 
@@ -111,6 +114,8 @@ MVP 的 `view-update` 返回完整官方 View。宿主使用稳定节点 ID 对 
 | Logging | 自动标记插件 ID，发布构建做敏感字段过滤 |
 
 MVP 明确不提供进程启动、环境变量、原始 Socket、全局快捷键、系统事件订阅、无界目录扫描和后台定时器。
+
+桌面宠物不会放宽以上限制。声明式动画由主程序渲染，宠物插件不能自行注册全局快捷键、监听桌面输入或通过可选 WASM 命令建立后台循环。
 
 ## 7. 安装与更新事务
 
