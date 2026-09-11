@@ -1,0 +1,10 @@
+id = "official.json-toolkit"
+version = "0.1.0"
+host_api = ">=1.0, <2.0"
+permissions = []
+
+[[commands]]
+id = "json.format"
+title = "Format JSON"
+subtitle = "Validate and pretty-print JSON locally"
+interaction = "view"

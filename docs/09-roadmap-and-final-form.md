@@ -12,6 +12,8 @@
 - Wasmtime Component Model + WIT 的真实跨进程调用
 - Windows/macOS 上应用发现、Spotlight/Windows Search、凭据存储探针
 - View 模型到 Slint 模型的渲染快照
+- stable-ID 差量、虚拟列表和 100/1,000/10,000 项候选模型探针
+- 强类型权限规范化、交集授权与安装/更新 diff 契约探针
 - SQLite 加密载荷、迁移和插件命名空间探针
 
 退出条件：两平台都能完成快捷键 → 搜索 → 打开内置命令；一个 WASM 示例能在 Host 崩溃和超时后恢复；性能预算有真实基线。
@@ -22,18 +24,25 @@
 
 - 应用启动、计算器、剪贴板历史、基础文件搜索、系统命令
 - 插件安装、禁用、原子更新、卸载和默认数据删除
-- Rust SDK、CLI、Mock Host 和两个示例插件
-- 官方声明式 List/Grid/Detail/Form/ActionPanel
+- `DeclaredPermission`/`EffectiveGrant`、权限 diff 和本地信任事实
+- App-owned capability 闭环：Clipboard 文本、typed KV、有界 HTTPS `GET`、用户选择文件 token，以及逐次 broker 裁决
+- `view`/`one-shot` 命令生命周期，以及完成、取消、超时后的 Host 回收
+- Rust SDK、CLI、Mock Host、`view`/`one-shot` 模板、golden fixtures 和真实 Host E2E
+- 官方声明式 List/Grid/Detail/Form/ViewState/ActionPanel、stable-ID 差量和虚拟列表
+- 宿主原生插件诊断页与可预览、可删减的本地诊断包
 - Windows/macOS 签名测试版
 
-退出条件：MVP 验收表全部有测试证据；至少 5 名内部用户连续一周使用；没有 UI 主线程阻塞和高优先级数据删除缺陷。
+退出条件：MVP 验收表全部有测试证据；权限 contract matrix 和 SDK/WIT/Wasmtime 精确版本矩阵通过；
+HTTP 与有效文件 token 均有真实 Component 成功/拒绝路径；无插件时不常驻 Host、watcher、网络 runtime 或
+Wasmtime；至少 5 名内部用户连续一周使用；没有 UI 主线程阻塞和高优先级数据删除缺陷。
 
 ## 4. Phase 2：插件生态基础
 
-- 插件开发文档站、模板、示例和本地调试器
-- 插件包静态分析、签名发布、权限审核和撤销列表
-- 插件详情、变更日志、兼容 API 版本显示
-- 更好的资源句柄、分页和离线缓存
+- 插件开发文档站、更多语言模板和显式 `plugin dev --watch`
+- 更深入的插件包静态分析、权限审核和撤销列表自动化
+- 插件详情、变更日志和扩展 provenance 可视化
+- 签名范围内的 source repo、source commit、builder identity、workflow、SBOM digest 和 transparency log reference
+- 更好的离线缓存；资源句柄和游标分页继续演进但不得破坏 MVP WIT 语义
 - 可选的 TypeScript SDK 适配器原型，但仍使用同一 WIT 语义
 
 退出条件：第三方作者无需阅读宿主源码即可完成插件；插件安装失败和权限拒绝可解释；协议一致性测试覆盖 Rust 与 TypeScript 适配器。
@@ -109,8 +118,8 @@ NovaHub 的最终形态不是“另一个带插件的启动器”，而是一个
 
 | 风险 | 触发器 | 行动 |
 |---|---|---|
-| Slint 关键无障碍能力不足 | 核心流程无法通过平台辅助技术 | 评估原生控件适配或 Tauri 作为局部替代，不先混用两套主 UI |
+| Slint 关键无障碍能力不足 | Phase 0 核心流程无法通过平台辅助技术 | 先补 `ui-slint` 平台语义桥，必要时桥接局部原生标准控件；仍失败则停止扩展并退回架构评审，不使用 Tauri/WebView fallback |
 | 共享 Host 隔离不足 | 可复现的跨插件影响 | 迁移到高风险插件独立进程并量化内存代价 |
 | 系统搜索质量不足 | 参考数据集 P95 超时或召回不达标 | 增加受控索引，不直接引入无界全盘扫描 |
-| 官方组件无法覆盖高价值场景 | 3 个以上真实插件需要复杂编辑器 | 评审独立 WebView Host，保持核心组件协议不变 |
+| 官方组件无法覆盖高价值场景 | 至少 20 个真实需求中有 30% 无法表达，且集中于复杂编辑器 | 仅评审独立、按需、可回收的受限 WebView Host；完整进程树内存与隔离预算必须实测通过，不替换 Slint Shell 或改变 WIT View 所有权 |
 | 生态审核成本过高 | 人工审核成为发布瓶颈 | 自动静态分析、权限分级和可信发布者策略，保留撤销能力 |

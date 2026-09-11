@@ -1,0 +1,1502 @@
+import {
+    Button,
+    CheckBox,
+    ComboBox,
+    HorizontalBox,
+    LineEdit,
+    ProgressIndicator,
+    Switch,
+    VerticalBox,
+} from "std-widgets.slint";
+
+component PluginItemRow inherits HorizontalBox {
+    in property <string> item-title;
+    in property <string> item-subtitle;
+    in property <string> item-status;
+    in property <string> item-badge;
+    in property <string> item-shortcut;
+    in property <string> item-icon-id;
+    in property <bool> item-visible;
+    in property <bool> dark-theme;
+    callback activated();
+
+    visible: item-visible;
+    height: 32px;
+    spacing: 8px;
+
+    Button {
+        width: 180px;
+        text: root.item-title;
+        accessible-label: root.item-title;
+        clicked => { root.activated(); }
+    }
+
+    Text {
+        vertical-alignment: center;
+        text: root.item-subtitle;
+        color: root.dark-theme ? #9bb9e8 : #4e6280;
+        overflow: elide;
+        accessible-label: "Plugin item description";
+    }
+
+    Text {
+        visible: root.item-status != "";
+        vertical-alignment: center;
+        text: root.item-status;
+        color: root.dark-theme ? #c8d8f2 : #52657f;
+        overflow: elide;
+        accessible-label: "Plugin item status";
+    }
+
+    Text {
+        visible: root.item-badge != "";
+        vertical-alignment: center;
+        text: "[" + root.item-badge + "]";
+        color: root.dark-theme ? #9ed8b0 : #26734d;
+        overflow: elide;
+        accessible-label: "Plugin item badge";
+    }
+
+    Text {
+        visible: root.item-shortcut != "";
+        vertical-alignment: center;
+        text: root.item-shortcut;
+        color: root.dark-theme ? #d5c2ff : #5b3c99;
+        overflow: elide;
+        accessible-label: "Plugin item shortcut";
+    }
+
+    Text {
+        visible: root.item-icon-id != "";
+        vertical-alignment: center;
+        text: "◆";
+        accessible-label: "Plugin item icon resource";
+    }
+}
+
+component PluginFieldRow inherits HorizontalBox {
+    in property <string> field-label;
+    in property <string> field-kind;
+    in property <bool> field-required;
+    in property <bool> field-visible;
+    in property <bool> dark-theme;
+    in property <string> field-helper;
+    in property <string> field-error;
+    in property <[string]> field-options;
+    in-out property <int> field-option-index;
+    in-out property <string> field-value;
+    callback value-edited(string);
+
+    visible: field-visible;
+    height: 34px;
+    spacing: 8px;
+
+    Text {
+        width: 180px;
+        vertical-alignment: center;
+        text: root.field-label
+            + (root.field-required ? " *" : "")
+            + (root.field-error != ""
+                ? " - " + root.field-error
+                : (root.field-helper != "" ? " - " + root.field-helper : ""));
+        color: root.field-error != ""
+            ? (root.dark-theme ? #ff9c9c : #b42318)
+            : (root.dark-theme ? #f5f7fa : #17191c);
+        overflow: elide;
+        accessible-label: root.field-label;
+    }
+
+    LineEdit {
+        visible: root.field-kind == "text" || root.field-kind == "password";
+        text <=> root.field-value;
+        input-type: root.field-kind == "password" ? InputType.password : InputType.text;
+        placeholder-text: root.field-label;
+        accessible-label: root.field-label;
+        edited => { root.value-edited(self.text); }
+    }
+
+    ComboBox {
+        visible: root.field-kind == "select";
+        model: root.field-options;
+        current-index <=> root.field-option-index;
+        accessible-label: root.field-label;
+        selected(value) => { root.value-edited(value); }
+    }
+
+    CheckBox {
+        visible: root.field-kind == "checkbox";
+        text: "Enabled";
+        checked: root.field-value == "true";
+        accessible-label: root.field-label;
+        toggled => {
+            root.field-value = self.checked ? "true" : "false";
+            root.value-edited(root.field-value);
+        }
+    }
+
+    Switch {
+        visible: root.field-kind == "switch";
+        text: "Enabled";
+        checked: root.field-value == "true";
+        accessible-label: root.field-label;
+        toggled => {
+            root.field-value = self.checked ? "true" : "false";
+            root.value-edited(root.field-value);
+        }
+    }
+}
+
+component PluginActionButton inherits Button {
+    in property <string> action-title;
+    in property <bool> action-visible;
+    callback activated();
+
+    visible: action-visible;
+    text: root.action-title;
+    accessible-label: root.action-title;
+    clicked => { root.activated(); }
+}
+
+component SearchResultRow inherits Rectangle {
+    in property <string> result-title;
+    in property <string> result-subtitle;
+    in property <bool> result-visible;
+    in property <bool> result-selected;
+    in property <bool> dark-theme;
+    callback activated();
+
+    visible: result-visible;
+    height: 44px;
+    background: result-selected
+        ? (root.dark-theme ? #25364f : #e8f1ff)
+        : (root.dark-theme ? #202327 : #ffffff);
+    border-radius: 6px;
+    accessible-role: button;
+    accessible-label: root.result-title + ", " + root.result-subtitle;
+
+    Text {
+        x: 12px;
+        y: 5px;
+        width: 420px;
+        height: 18px;
+        text: root.result-title;
+        color: root.dark-theme ? #f5f7fa : #17191c;
+        overflow: elide;
+        accessible-label: root.result-title;
+    }
+
+    Text {
+        x: 12px;
+        y: 24px;
+        width: 600px;
+        height: 15px;
+        text: root.result-subtitle;
+        color: root.dark-theme ? #aeb5bf : #5e6670;
+        font-size: 12px;
+        overflow: elide;
+        accessible-label: root.result-subtitle;
+    }
+
+    TouchArea {
+        clicked => { root.activated(); }
+    }
+}
+
+component ActionPanelRow inherits Button {
+    in property <string> action-title;
+    in property <bool> action-visible;
+    callback activated();
+
+    visible: action-visible;
+    text: root.action-title;
+    accessible-label: root.action-title;
+    clicked => { root.activated(); }
+}
+
+component ClipboardRow inherits HorizontalBox {
+    in property <string> item-title;
+    in property <string> item-subtitle;
+    in property <bool> item-visible;
+    in property <bool> item-pinned;
+    in property <bool> item-copyable;
+    callback activated();
+    callback copy-requested();
+    callback pin-requested();
+
+    visible: item-visible;
+    height: 42px;
+    spacing: 8px;
+
+    Button {
+        width: 420px;
+        text: root.item-title;
+        accessible-label: root.item-title + ", " + root.item-subtitle;
+        clicked => { root.activated(); }
+    }
+
+    Button {
+        width: 80px;
+        text: root.item-pinned ? "Unpin" : "Pin";
+        accessible-label: root.item-pinned ? "Unpin clipboard item" : "Pin clipboard item";
+        clicked => { root.pin-requested(); }
+    }
+
+    Button {
+        width: 80px;
+        enabled: root.item-copyable;
+        text: root.item-copyable ? "Copy" : "Preview";
+        accessible-label: root.item-copyable ? "Copy clipboard item" : "Clipboard image preview unavailable";
+        clicked => { root.copy-requested(); }
+    }
+}
+
+export component ShellWindow inherits Window {
+    in-out property <bool> dark-theme: false;
+    in-out property <string> result-text: "Start typing to search NovaHub";
+    in-out property <bool> result-list-visible: false;
+    in-out property <string> result-1-title: "";
+    in-out property <string> result-1-subtitle: "";
+    in-out property <bool> result-1-visible: false;
+    in-out property <bool> result-1-selected: false;
+    in-out property <string> result-2-title: "";
+    in-out property <string> result-2-subtitle: "";
+    in-out property <bool> result-2-visible: false;
+    in-out property <bool> result-2-selected: false;
+    in-out property <string> result-3-title: "";
+    in-out property <string> result-3-subtitle: "";
+    in-out property <bool> result-3-visible: false;
+    in-out property <bool> result-3-selected: false;
+    in-out property <string> result-4-title: "";
+    in-out property <string> result-4-subtitle: "";
+    in-out property <bool> result-4-visible: false;
+    in-out property <bool> result-4-selected: false;
+    in-out property <string> result-5-title: "";
+    in-out property <string> result-5-subtitle: "";
+    in-out property <bool> result-5-visible: false;
+    in-out property <bool> result-5-selected: false;
+    in-out property <string> result-6-title: "";
+    in-out property <string> result-6-subtitle: "";
+    in-out property <bool> result-6-visible: false;
+    in-out property <bool> result-6-selected: false;
+    in-out property <string> result-7-title: "";
+    in-out property <string> result-7-subtitle: "";
+    in-out property <bool> result-7-visible: false;
+    in-out property <bool> result-7-selected: false;
+    in-out property <string> result-8-title: "";
+    in-out property <string> result-8-subtitle: "";
+    in-out property <bool> result-8-visible: false;
+    in-out property <bool> result-8-selected: false;
+    in-out property <bool> action-panel-visible: false;
+    in-out property <string> action-panel-title: "Actions";
+    in-out property <string> action-panel-description: "";
+    in-out property <string> action-panel-1-title: "";
+    in-out property <bool> action-panel-1-visible: false;
+    in-out property <string> action-panel-2-title: "";
+    in-out property <bool> action-panel-2-visible: false;
+    in-out property <string> status-text: "Ready";
+    in-out property <string> query-text: "";
+    in-out property <string> provider-filter-label: "All providers";
+    in-out property <string> plugin-view-kind: "";
+    in-out property <string> plugin-view-title: "";
+    in-out property <string> plugin-view-body: "";
+    in-out property <float> plugin-progress: 0.0;
+    in-out property <string> plugin-item-1-title: "";
+    in-out property <string> plugin-item-1-subtitle: "";
+    in-out property <string> plugin-item-1-status: "";
+    in-out property <string> plugin-item-1-badge: "";
+    in-out property <string> plugin-item-1-shortcut: "";
+    in-out property <string> plugin-item-1-icon-id: "";
+    in-out property <bool> plugin-item-1-visible: false;
+    in-out property <string> plugin-item-2-title: "";
+    in-out property <string> plugin-item-2-subtitle: "";
+    in-out property <string> plugin-item-2-status: "";
+    in-out property <string> plugin-item-2-badge: "";
+    in-out property <string> plugin-item-2-shortcut: "";
+    in-out property <string> plugin-item-2-icon-id: "";
+    in-out property <bool> plugin-item-2-visible: false;
+    in-out property <string> plugin-item-3-title: "";
+    in-out property <string> plugin-item-3-subtitle: "";
+    in-out property <string> plugin-item-3-status: "";
+    in-out property <string> plugin-item-3-badge: "";
+    in-out property <string> plugin-item-3-shortcut: "";
+    in-out property <string> plugin-item-3-icon-id: "";
+    in-out property <bool> plugin-item-3-visible: false;
+    in-out property <string> plugin-item-4-title: "";
+    in-out property <string> plugin-item-4-subtitle: "";
+    in-out property <string> plugin-item-4-status: "";
+    in-out property <string> plugin-item-4-badge: "";
+    in-out property <string> plugin-item-4-shortcut: "";
+    in-out property <string> plugin-item-4-icon-id: "";
+    in-out property <bool> plugin-item-4-visible: false;
+    in-out property <string> plugin-item-5-title: "";
+    in-out property <string> plugin-item-5-subtitle: "";
+    in-out property <string> plugin-item-5-status: "";
+    in-out property <string> plugin-item-5-badge: "";
+    in-out property <string> plugin-item-5-shortcut: "";
+    in-out property <string> plugin-item-5-icon-id: "";
+    in-out property <bool> plugin-item-5-visible: false;
+    in-out property <string> plugin-item-6-title: "";
+    in-out property <string> plugin-item-6-subtitle: "";
+    in-out property <string> plugin-item-6-status: "";
+    in-out property <string> plugin-item-6-badge: "";
+    in-out property <string> plugin-item-6-shortcut: "";
+    in-out property <string> plugin-item-6-icon-id: "";
+    in-out property <bool> plugin-item-6-visible: false;
+    in-out property <bool> plugin-list-previous-visible: false;
+    in-out property <bool> plugin-list-next-visible: false;
+    in-out property <bool> plugin-list-next-loads-more: false;
+    in-out property <bool> diagnostics-failures-only: false;
+    in-out property <string> plugin-field-1-label: "";
+    in-out property <string> plugin-field-1-kind: "text";
+    in-out property <bool> plugin-field-1-required: false;
+    in-out property <bool> plugin-field-1-visible: false;
+    in-out property <string> plugin-field-1-helper: "";
+    in-out property <string> plugin-field-1-error: "";
+    in-out property <[string]> plugin-field-1-options: [];
+    in-out property <int> plugin-field-1-option-index: 0;
+    in-out property <string> plugin-field-1-value: "";
+    in-out property <string> plugin-field-2-label: "";
+    in-out property <string> plugin-field-2-kind: "text";
+    in-out property <bool> plugin-field-2-required: false;
+    in-out property <bool> plugin-field-2-visible: false;
+    in-out property <string> plugin-field-2-helper: "";
+    in-out property <string> plugin-field-2-error: "";
+    in-out property <[string]> plugin-field-2-options: [];
+    in-out property <int> plugin-field-2-option-index: 0;
+    in-out property <string> plugin-field-2-value: "";
+    in-out property <string> plugin-field-3-label: "";
+    in-out property <string> plugin-field-3-kind: "text";
+    in-out property <bool> plugin-field-3-required: false;
+    in-out property <bool> plugin-field-3-visible: false;
+    in-out property <string> plugin-field-3-helper: "";
+    in-out property <string> plugin-field-3-error: "";
+    in-out property <[string]> plugin-field-3-options: [];
+    in-out property <int> plugin-field-3-option-index: 0;
+    in-out property <string> plugin-field-3-value: "";
+    in-out property <string> plugin-field-4-label: "";
+    in-out property <string> plugin-field-4-kind: "text";
+    in-out property <bool> plugin-field-4-required: false;
+    in-out property <bool> plugin-field-4-visible: false;
+    in-out property <string> plugin-field-4-helper: "";
+    in-out property <string> plugin-field-4-error: "";
+    in-out property <[string]> plugin-field-4-options: [];
+    in-out property <int> plugin-field-4-option-index: 0;
+    in-out property <string> plugin-field-4-value: "";
+    in-out property <string> plugin-field-5-label: "";
+    in-out property <string> plugin-field-5-kind: "text";
+    in-out property <bool> plugin-field-5-required: false;
+    in-out property <bool> plugin-field-5-visible: false;
+    in-out property <string> plugin-field-5-helper: "";
+    in-out property <string> plugin-field-5-error: "";
+    in-out property <[string]> plugin-field-5-options: [];
+    in-out property <int> plugin-field-5-option-index: 0;
+    in-out property <string> plugin-field-5-value: "";
+    in-out property <string> plugin-field-6-label: "";
+    in-out property <string> plugin-field-6-kind: "text";
+    in-out property <bool> plugin-field-6-required: false;
+    in-out property <bool> plugin-field-6-visible: false;
+    in-out property <string> plugin-field-6-helper: "";
+    in-out property <string> plugin-field-6-error: "";
+    in-out property <[string]> plugin-field-6-options: [];
+    in-out property <int> plugin-field-6-option-index: 0;
+    in-out property <string> plugin-field-6-value: "";
+    in-out property <string> plugin-action-1-title: "";
+    in-out property <bool> plugin-action-1-visible: false;
+    in-out property <string> plugin-action-2-title: "";
+    in-out property <bool> plugin-action-2-visible: false;
+    in-out property <string> plugin-action-3-title: "";
+    in-out property <bool> plugin-action-3-visible: false;
+    in-out property <string> plugin-action-4-title: "";
+    in-out property <bool> plugin-action-4-visible: false;
+    in-out property <string> plugin-action-5-title: "";
+    in-out property <bool> plugin-action-5-visible: false;
+    in-out property <string> plugin-action-6-title: "";
+    in-out property <bool> plugin-action-6-visible: false;
+    in-out property <bool> plugin-default-action-visible: false;
+    callback query-changed(string);
+    callback run-requested();
+    callback selection-moved(int);
+    callback result-row-activated(int);
+    callback action-panel-requested();
+    callback action-panel-dismiss-requested();
+    callback action-panel-action-requested(int);
+    callback dismiss-requested();
+    callback shell-focus-lost();
+    callback focus-search-requested();
+    callback settings-requested();
+    callback clipboard-history-requested();
+    callback provider-filter-requested();
+    callback plugin-item-activated(int);
+    callback plugin-list-previous-requested();
+    callback plugin-list-next-requested();
+    callback plugin-action-requested(int);
+    callback plugin-default-action-requested();
+    callback plugin-form-value-changed(int, string);
+    callback plugin-form-submit-requested();
+    callback diagnostics-preview-requested();
+    callback diagnostics-filter-requested();
+    callback diagnostics-clear-requested();
+    callback diagnostics-export-requested();
+
+    focus-search-requested => { search-input.focus(); }
+
+    width: 720px;
+    height: 620px;
+    title: "NovaHub";
+    background: root.dark-theme ? #151719 : #f4f5f7;
+
+    FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.UpArrow) {
+                root.selection-moved(-1);
+                accept
+            } else if (event.text == Key.DownArrow) {
+                root.selection-moved(1);
+                accept
+            } else if ((event.text == "k" || event.text == "K")
+                && (event.modifiers.control || event.modifiers.meta)) {
+                root.action-panel-requested();
+                accept
+            } else if (event.text == ","
+                && (event.modifiers.control || event.modifiers.meta)) {
+                root.settings-requested();
+                accept
+            } else if ((event.text == "p" || event.text == "P")
+                && (event.modifiers.control || event.modifiers.meta)) {
+                root.provider-filter-requested();
+                accept
+            } else if (event.text == Key.Escape) {
+                if (root.action-panel-visible) {
+                    root.action-panel-dismiss-requested();
+                } else {
+                    root.dismiss-requested();
+                }
+                accept
+            }
+            reject
+        }
+
+        focus-lost(_reason) => { root.shell-focus-lost(); }
+
+        VerticalBox {
+            padding: 24px;
+            spacing: 12px;
+
+            Text {
+                text: "NovaHub";
+                color: root.dark-theme ? #f5f7fa : #17191c;
+                accessible-label: "NovaHub command launcher";
+            }
+
+            search-input := LineEdit {
+                text <=> root.query-text;
+                placeholder-text: "Search all capabilities";
+                accessible-label: "Search all capabilities";
+                edited => { root.query-changed(self.text); }
+                accepted => {
+                    if (root.plugin-view-kind == "action_panel"
+                        && root.plugin-default-action-visible) {
+                        root.plugin-default-action-requested();
+                    } else {
+                        root.run-requested();
+                    }
+                }
+            }
+
+            HorizontalBox {
+                height: 30px;
+                spacing: 8px;
+
+                Text {
+                    width: 110px;
+                    vertical-alignment: center;
+                    text: "Provider";
+                    color: root.dark-theme ? #aeb5bf : #5e6670;
+                    accessible-label: "Provider filter";
+                }
+
+                Button {
+                    width: 220px;
+                    text: root.provider-filter-label;
+                    accessible-label: "Change provider filter";
+                    clicked => { root.provider-filter-requested(); }
+                }
+            }
+
+            VerticalBox {
+                visible: root.result-list-visible;
+                height: 380px;
+                spacing: 4px;
+
+                SearchResultRow {
+                    result-title: root.result-1-title;
+                    result-subtitle: root.result-1-subtitle;
+                    result-visible: root.result-1-visible;
+                    result-selected: root.result-1-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(0); }
+                }
+                SearchResultRow {
+                    result-title: root.result-2-title;
+                    result-subtitle: root.result-2-subtitle;
+                    result-visible: root.result-2-visible;
+                    result-selected: root.result-2-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(1); }
+                }
+                SearchResultRow {
+                    result-title: root.result-3-title;
+                    result-subtitle: root.result-3-subtitle;
+                    result-visible: root.result-3-visible;
+                    result-selected: root.result-3-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(2); }
+                }
+                SearchResultRow {
+                    result-title: root.result-4-title;
+                    result-subtitle: root.result-4-subtitle;
+                    result-visible: root.result-4-visible;
+                    result-selected: root.result-4-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(3); }
+                }
+                SearchResultRow {
+                    result-title: root.result-5-title;
+                    result-subtitle: root.result-5-subtitle;
+                    result-visible: root.result-5-visible;
+                    result-selected: root.result-5-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(4); }
+                }
+                SearchResultRow {
+                    result-title: root.result-6-title;
+                    result-subtitle: root.result-6-subtitle;
+                    result-visible: root.result-6-visible;
+                    result-selected: root.result-6-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(5); }
+                }
+                SearchResultRow {
+                    result-title: root.result-7-title;
+                    result-subtitle: root.result-7-subtitle;
+                    result-visible: root.result-7-visible;
+                    result-selected: root.result-7-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(6); }
+                }
+                SearchResultRow {
+                    result-title: root.result-8-title;
+                    result-subtitle: root.result-8-subtitle;
+                    result-visible: root.result-8-visible;
+                    result-selected: root.result-8-selected;
+                    dark-theme: root.dark-theme;
+                    activated => { root.result-row-activated(7); }
+                }
+            }
+
+            Rectangle {
+                visible: root.action-panel-visible;
+                height: 116px;
+                background: root.dark-theme ? #202327 : #ffffff;
+                border-radius: 6px;
+                accessible-role: groupbox;
+                accessible-label: root.action-panel-title;
+
+                Text {
+                    x: 12px;
+                    y: 8px;
+                    width: 620px;
+                    height: 20px;
+                    text: root.action-panel-title;
+                    color: root.dark-theme ? #f5f7fa : #17191c;
+                    font-size: 14px;
+                    overflow: elide;
+                }
+
+                Text {
+                    x: 12px;
+                    y: 29px;
+                    width: 620px;
+                    height: 18px;
+                    text: root.action-panel-description;
+                    color: root.dark-theme ? #aeb5bf : #5e6670;
+                    font-size: 12px;
+                    overflow: elide;
+                }
+
+                ActionPanelRow {
+                    x: 12px;
+                    y: 53px;
+                    width: 296px;
+                    height: 34px;
+                    action-title: root.action-panel-1-title;
+                    action-visible: root.action-panel-1-visible;
+                    activated => { root.action-panel-action-requested(0); }
+                }
+
+                ActionPanelRow {
+                    x: 316px;
+                    y: 53px;
+                    width: 296px;
+                    height: 34px;
+                    action-title: root.action-panel-2-title;
+                    action-visible: root.action-panel-2-visible;
+                    activated => { root.action-panel-action-requested(1); }
+                }
+            }
+
+            Text {
+                visible: !root.result-list-visible;
+                text: root.result-text;
+                color: root.dark-theme ? #aeb5bf : #5e6670;
+                accessible-label: "Search results";
+            }
+
+            Text {
+                text: root.status-text;
+                color: root.dark-theme ? #aeb5bf : #5e6670;
+                accessible-label: "Command status";
+            }
+
+            Rectangle {
+                height: 300px;
+                visible: root.plugin-view-kind != "";
+                background: root.dark-theme ? #202a3b : #eef3fb;
+                border-radius: 6px;
+
+                VerticalBox {
+                    x: 12px;
+                    y: 8px;
+                    width: 648px;
+                    height: 284px;
+                    spacing: 5px;
+
+                    Text {
+                        height: 22px;
+                        text: root.plugin-view-title;
+                        font-size: 16px;
+                        color: root.dark-theme ? #f5f7fa : #17243a;
+                        overflow: elide;
+                        accessible-label: "Plugin view title";
+                    }
+
+                    Text {
+                        height: 18px;
+                        text: root.plugin-view-kind;
+                        font-size: 11px;
+                        color: root.dark-theme ? #9bb9e8 : #4e6280;
+                        overflow: elide;
+                        accessible-label: "Plugin view kind";
+                    }
+
+                    Text {
+                        height: 58px;
+                        visible: root.plugin-view-kind == "empty"
+                            || root.plugin-view-kind == "detail"
+                            || root.plugin-view-kind == "loading"
+                            || root.plugin-view-kind == "progress"
+                            || root.plugin-view-kind == "error"
+                            || root.plugin-view-kind == "unknown";
+                        text: root.plugin-view-body;
+                        color: root.dark-theme ? #d7e3f7 : #25334b;
+                        wrap: word-wrap;
+                        overflow: elide;
+                        accessible-label: "Plugin view content";
+                    }
+
+                    ProgressIndicator {
+                        visible: root.plugin-view-kind == "progress";
+                        progress: root.plugin-progress;
+                        indeterminate: false;
+                        accessible-label: "Plugin progress";
+                    }
+
+                    Text {
+                        height: 190px;
+                        visible: root.plugin-view-kind == "diagnostics";
+                        text: root.plugin-view-body;
+                        color: root.dark-theme ? #d7e3f7 : #25334b;
+                        wrap: word-wrap;
+                        overflow: elide;
+                        accessible-label: "Diagnostic preview";
+                    }
+
+                    PluginItemRow {
+                        dark-theme: root.dark-theme;
+                        item-title: root.plugin-item-1-title;
+                        item-subtitle: root.plugin-item-1-subtitle;
+                        item-status: root.plugin-item-1-status;
+                        item-badge: root.plugin-item-1-badge;
+                        item-shortcut: root.plugin-item-1-shortcut;
+                        item-icon-id: root.plugin-item-1-icon-id;
+                        item-visible: root.plugin-item-1-visible;
+                        activated => { root.plugin-item-activated(0); }
+                    }
+                    PluginItemRow {
+                        dark-theme: root.dark-theme;
+                        item-title: root.plugin-item-2-title;
+                        item-subtitle: root.plugin-item-2-subtitle;
+                        item-status: root.plugin-item-2-status;
+                        item-badge: root.plugin-item-2-badge;
+                        item-shortcut: root.plugin-item-2-shortcut;
+                        item-icon-id: root.plugin-item-2-icon-id;
+                        item-visible: root.plugin-item-2-visible;
+                        activated => { root.plugin-item-activated(1); }
+                    }
+                    PluginItemRow {
+                        dark-theme: root.dark-theme;
+                        item-title: root.plugin-item-3-title;
+                        item-subtitle: root.plugin-item-3-subtitle;
+                        item-status: root.plugin-item-3-status;
+                        item-badge: root.plugin-item-3-badge;
+                        item-shortcut: root.plugin-item-3-shortcut;
+                        item-icon-id: root.plugin-item-3-icon-id;
+                        item-visible: root.plugin-item-3-visible;
+                        activated => { root.plugin-item-activated(2); }
+                    }
+                    PluginItemRow {
+                        dark-theme: root.dark-theme;
+                        item-title: root.plugin-item-4-title;
+                        item-subtitle: root.plugin-item-4-subtitle;
+                        item-status: root.plugin-item-4-status;
+                        item-badge: root.plugin-item-4-badge;
+                        item-shortcut: root.plugin-item-4-shortcut;
+                        item-icon-id: root.plugin-item-4-icon-id;
+                        item-visible: root.plugin-item-4-visible;
+                        activated => { root.plugin-item-activated(3); }
+                    }
+                    PluginItemRow {
+                        dark-theme: root.dark-theme;
+                        item-title: root.plugin-item-5-title;
+                        item-subtitle: root.plugin-item-5-subtitle;
+                        item-status: root.plugin-item-5-status;
+                        item-badge: root.plugin-item-5-badge;
+                        item-shortcut: root.plugin-item-5-shortcut;
+                        item-icon-id: root.plugin-item-5-icon-id;
+                        item-visible: root.plugin-item-5-visible;
+                        activated => { root.plugin-item-activated(4); }
+                    }
+                    PluginItemRow {
+                        dark-theme: root.dark-theme;
+                        item-title: root.plugin-item-6-title;
+                        item-subtitle: root.plugin-item-6-subtitle;
+                        item-status: root.plugin-item-6-status;
+                        item-badge: root.plugin-item-6-badge;
+                        item-shortcut: root.plugin-item-6-shortcut;
+                        item-icon-id: root.plugin-item-6-icon-id;
+                        item-visible: root.plugin-item-6-visible;
+                        activated => { root.plugin-item-activated(5); }
+                    }
+
+                    HorizontalBox {
+                        height: 34px;
+                        spacing: 8px;
+                        visible: root.plugin-view-kind == "list"
+                            || root.plugin-view-kind == "grid";
+
+                        Button {
+                            width: 120px;
+                            enabled: root.plugin-list-previous-visible;
+                            text: "< Previous";
+                            accessible-label: "Previous plugin items";
+                            clicked => { root.plugin-list-previous-requested(); }
+                        }
+
+                        Button {
+                            width: 120px;
+                            enabled: root.plugin-list-next-visible;
+                            text: root.plugin-list-next-loads-more ? "Load more >" : "Next >";
+                            accessible-label: root.plugin-list-next-loads-more
+                                ? "Load more plugin items"
+                                : "Next plugin items";
+                            clicked => { root.plugin-list-next-requested(); }
+                        }
+                    }
+
+                    HorizontalBox {
+                        height: 34px;
+                        spacing: 8px;
+                        visible: root.plugin-view-kind == "diagnostics";
+
+                        Button {
+                            width: 120px;
+                            text: "Preview";
+                            accessible-label: "Preview diagnostics";
+                            clicked => { root.diagnostics-preview-requested(); }
+                        }
+
+                        Button {
+                            width: 160px;
+                            text: root.diagnostics-failures-only
+                                ? "Show all events"
+                                : "Failures only";
+                            accessible-label: root.diagnostics-failures-only
+                                ? "Show all diagnostic events"
+                                : "Show diagnostic failures only";
+                            clicked => { root.diagnostics-filter-requested(); }
+                        }
+
+                        Button {
+                            width: 100px;
+                            text: "Clear";
+                            accessible-label: "Clear diagnostics";
+                            clicked => { root.diagnostics-clear-requested(); }
+                        }
+
+                        Button {
+                            width: 100px;
+                            text: "Export";
+                            accessible-label: "Export diagnostics";
+                            clicked => { root.diagnostics-export-requested(); }
+                        }
+                    }
+
+                    PluginFieldRow {
+                        dark-theme: root.dark-theme;
+                        field-label: root.plugin-field-1-label;
+                        field-kind: root.plugin-field-1-kind;
+                        field-required: root.plugin-field-1-required;
+                        field-visible: root.plugin-field-1-visible;
+                        field-helper: root.plugin-field-1-helper;
+                        field-error: root.plugin-field-1-error;
+                        field-options: root.plugin-field-1-options;
+                        field-option-index <=> root.plugin-field-1-option-index;
+                        field-value <=> root.plugin-field-1-value;
+                        value-edited(value) => { root.plugin-form-value-changed(0, value); }
+                    }
+                    PluginFieldRow {
+                        dark-theme: root.dark-theme;
+                        field-label: root.plugin-field-2-label;
+                        field-kind: root.plugin-field-2-kind;
+                        field-required: root.plugin-field-2-required;
+                        field-visible: root.plugin-field-2-visible;
+                        field-helper: root.plugin-field-2-helper;
+                        field-error: root.plugin-field-2-error;
+                        field-options: root.plugin-field-2-options;
+                        field-option-index <=> root.plugin-field-2-option-index;
+                        field-value <=> root.plugin-field-2-value;
+                        value-edited(value) => { root.plugin-form-value-changed(1, value); }
+                    }
+                    PluginFieldRow {
+                        dark-theme: root.dark-theme;
+                        field-label: root.plugin-field-3-label;
+                        field-kind: root.plugin-field-3-kind;
+                        field-required: root.plugin-field-3-required;
+                        field-visible: root.plugin-field-3-visible;
+                        field-helper: root.plugin-field-3-helper;
+                        field-error: root.plugin-field-3-error;
+                        field-options: root.plugin-field-3-options;
+                        field-option-index <=> root.plugin-field-3-option-index;
+                        field-value <=> root.plugin-field-3-value;
+                        value-edited(value) => { root.plugin-form-value-changed(2, value); }
+                    }
+                    PluginFieldRow {
+                        dark-theme: root.dark-theme;
+                        field-label: root.plugin-field-4-label;
+                        field-kind: root.plugin-field-4-kind;
+                        field-required: root.plugin-field-4-required;
+                        field-visible: root.plugin-field-4-visible;
+                        field-helper: root.plugin-field-4-helper;
+                        field-error: root.plugin-field-4-error;
+                        field-options: root.plugin-field-4-options;
+                        field-option-index <=> root.plugin-field-4-option-index;
+                        field-value <=> root.plugin-field-4-value;
+                        value-edited(value) => { root.plugin-form-value-changed(3, value); }
+                    }
+                    PluginFieldRow {
+                        dark-theme: root.dark-theme;
+                        field-label: root.plugin-field-5-label;
+                        field-kind: root.plugin-field-5-kind;
+                        field-required: root.plugin-field-5-required;
+                        field-visible: root.plugin-field-5-visible;
+                        field-helper: root.plugin-field-5-helper;
+                        field-error: root.plugin-field-5-error;
+                        field-options: root.plugin-field-5-options;
+                        field-option-index <=> root.plugin-field-5-option-index;
+                        field-value <=> root.plugin-field-5-value;
+                        value-edited(value) => { root.plugin-form-value-changed(4, value); }
+                    }
+                    PluginFieldRow {
+                        dark-theme: root.dark-theme;
+                        field-label: root.plugin-field-6-label;
+                        field-kind: root.plugin-field-6-kind;
+                        field-required: root.plugin-field-6-required;
+                        field-visible: root.plugin-field-6-visible;
+                        field-helper: root.plugin-field-6-helper;
+                        field-error: root.plugin-field-6-error;
+                        field-options: root.plugin-field-6-options;
+                        field-option-index <=> root.plugin-field-6-option-index;
+                        field-value <=> root.plugin-field-6-value;
+                        value-edited(value) => { root.plugin-form-value-changed(5, value); }
+                    }
+
+                    Button {
+                        visible: root.plugin-view-kind == "form";
+                        text: "Submit";
+                        accessible-label: "Submit plugin form";
+                        clicked => { root.plugin-form-submit-requested(); }
+                    }
+
+                    PluginActionButton {
+                        action-title: root.plugin-action-1-title;
+                        action-visible: root.plugin-action-1-visible;
+                        activated => { root.plugin-action-requested(0); }
+                    }
+                    PluginActionButton {
+                        action-title: root.plugin-action-2-title;
+                        action-visible: root.plugin-action-2-visible;
+                        activated => { root.plugin-action-requested(1); }
+                    }
+                    PluginActionButton {
+                        action-title: root.plugin-action-3-title;
+                        action-visible: root.plugin-action-3-visible;
+                        activated => { root.plugin-action-requested(2); }
+                    }
+                    PluginActionButton {
+                        action-title: root.plugin-action-4-title;
+                        action-visible: root.plugin-action-4-visible;
+                        activated => { root.plugin-action-requested(3); }
+                    }
+                    PluginActionButton {
+                        action-title: root.plugin-action-5-title;
+                        action-visible: root.plugin-action-5-visible;
+                        activated => { root.plugin-action-requested(4); }
+                    }
+                    PluginActionButton {
+                        action-title: root.plugin-action-6-title;
+                        action-visible: root.plugin-action-6-visible;
+                        activated => { root.plugin-action-requested(5); }
+                    }
+                }
+            }
+
+            Button {
+                text: "Run";
+                accessible-label: "Run selected command";
+                clicked => { root.run-requested(); }
+            }
+        }
+    }
+}
+
+export component SettingsWindow inherits Window {
+    in-out property <bool> dark-theme: false;
+    in-out property <string> theme: "system";
+    in-out property <string> hotkey: "";
+    in-out property <string> clipboard-ttl: "604800";
+    in-out property <string> clipboard-limit: "500";
+    in-out property <string> status-text: "";
+    callback settings-save-requested();
+    callback settings-dismiss-requested();
+
+    width: 920px;
+    height: 640px;
+    title: "NovaHub Settings";
+
+    HorizontalBox {
+        Rectangle {
+            width: 220px;
+            background: #202327;
+
+            VerticalBox {
+                padding: 24px;
+                spacing: 12px;
+
+                Text {
+                    text: "Settings";
+                    color: #f5f7fa;
+                    font-size: 20px;
+                    accessible-label: "NovaHub settings";
+                }
+                Text {
+                    text: "General";
+                    color: #aeb5bf;
+                    accessible-label: "General settings section";
+                }
+                Text {
+                    text: "Privacy";
+                    color: #aeb5bf;
+                    accessible-label: "Privacy settings section";
+                }
+            }
+        }
+
+        Rectangle {
+            background: root.dark-theme ? #151719 : #f4f5f7;
+
+            VerticalBox {
+                padding: 32px;
+                spacing: 16px;
+
+                Text {
+                    text: "General";
+                    color: root.dark-theme ? #f5f7fa : #17191c;
+                    font-size: 20px;
+                    accessible-label: "General settings";
+                }
+
+                Text {
+                    text: "Theme (system, light, or dark)";
+                    color: root.dark-theme ? #aeb5bf : #5e6670;
+                    accessible-label: "Theme setting label";
+                }
+                LineEdit {
+                    text <=> root.theme;
+                    placeholder-text: "system";
+                    accessible-label: "Theme value";
+                }
+
+                Text {
+                    text: "Global shortcut";
+                    color: root.dark-theme ? #aeb5bf : #5e6670;
+                    accessible-label: "Global shortcut setting label";
+                }
+                LineEdit {
+                    text <=> root.hotkey;
+                    placeholder-text: "Alt+Space";
+                    accessible-label: "Global shortcut value";
+                }
+
+                Text {
+                    text: "Clipboard retention (seconds)";
+                    color: root.dark-theme ? #aeb5bf : #5e6670;
+                    accessible-label: "Clipboard retention setting label";
+                }
+                LineEdit {
+                    text <=> root.clipboard-ttl;
+                    placeholder-text: "604800";
+                    accessible-label: "Clipboard retention value";
+                }
+
+                Text {
+                    text: "Clipboard item limit";
+                    color: root.dark-theme ? #aeb5bf : #5e6670;
+                    accessible-label: "Clipboard item limit setting label";
+                }
+                LineEdit {
+                    text <=> root.clipboard-limit;
+                    placeholder-text: "500";
+                    accessible-label: "Clipboard item limit value";
+                }
+
+                Text {
+                    text: root.status-text;
+                    color: root.dark-theme ? #f2b35b : #a45a00;
+                    accessible-label: "Settings status";
+                }
+
+                HorizontalBox {
+                    spacing: 12px;
+                    Button {
+                        text: "Save";
+                        accessible-label: "Save settings";
+                        clicked => { root.settings-save-requested(); }
+                    }
+                    Button {
+                        text: "Cancel";
+                        accessible-label: "Cancel settings";
+                        clicked => { root.settings-dismiss-requested(); }
+                    }
+                }
+            }
+        }
+    }
+}
+
+export component ClipboardWindow inherits Window {
+    in-out property <string> filter-label: "All";
+    in-out property <string> status-text: "";
+    in-out property <string> preview-text: "Select an item to preview";
+    in-out property <string> preview-kind: "";
+    in-out property <bool> paused: false;
+    in-out property <string> item-1-title: "";
+    in-out property <string> item-1-subtitle: "";
+    in-out property <bool> item-1-visible: false;
+    in-out property <bool> item-1-pinned: false;
+    in-out property <bool> item-1-copyable: false;
+    in-out property <string> item-2-title: "";
+    in-out property <string> item-2-subtitle: "";
+    in-out property <bool> item-2-visible: false;
+    in-out property <bool> item-2-pinned: false;
+    in-out property <bool> item-2-copyable: false;
+    in-out property <string> item-3-title: "";
+    in-out property <string> item-3-subtitle: "";
+    in-out property <bool> item-3-visible: false;
+    in-out property <bool> item-3-pinned: false;
+    in-out property <bool> item-3-copyable: false;
+    in-out property <string> item-4-title: "";
+    in-out property <string> item-4-subtitle: "";
+    in-out property <bool> item-4-visible: false;
+    in-out property <bool> item-4-pinned: false;
+    in-out property <bool> item-4-copyable: false;
+    in-out property <string> item-5-title: "";
+    in-out property <string> item-5-subtitle: "";
+    in-out property <bool> item-5-visible: false;
+    in-out property <bool> item-5-pinned: false;
+    in-out property <bool> item-5-copyable: false;
+    in-out property <string> item-6-title: "";
+    in-out property <string> item-6-subtitle: "";
+    in-out property <bool> item-6-visible: false;
+    in-out property <bool> item-6-pinned: false;
+    in-out property <bool> item-6-copyable: false;
+    in-out property <string> item-7-title: "";
+    in-out property <string> item-7-subtitle: "";
+    in-out property <bool> item-7-visible: false;
+    in-out property <bool> item-7-pinned: false;
+    in-out property <bool> item-7-copyable: false;
+    in-out property <string> item-8-title: "";
+    in-out property <string> item-8-subtitle: "";
+    in-out property <bool> item-8-visible: false;
+    in-out property <bool> item-8-pinned: false;
+    in-out property <bool> item-8-copyable: false;
+    callback filter-requested();
+    callback item-activated(int);
+    callback item-copy-requested(int);
+    callback item-pin-requested(int);
+    callback clear-requested();
+    callback pause-requested();
+    callback dismiss-requested();
+
+    width: 880px;
+    height: 760px;
+    title: "Clipboard History";
+
+    VerticalBox {
+        padding: 24px;
+        spacing: 12px;
+
+        HorizontalBox {
+            height: 36px;
+            spacing: 8px;
+            Text {
+                width: 180px;
+                text: "Clipboard History";
+                font-size: 20px;
+                vertical-alignment: center;
+                accessible-label: "Clipboard history";
+            }
+            Button {
+                width: 160px;
+                text: root.filter-label;
+                accessible-label: "Change clipboard type filter";
+                clicked => { root.filter-requested(); }
+            }
+            Button {
+                width: 120px;
+                text: root.paused ? "Resume" : "Pause";
+                accessible-label: root.paused ? "Resume clipboard capture" : "Pause clipboard capture";
+                clicked => { root.pause-requested(); }
+            }
+            Button {
+                width: 120px;
+                text: "Clear all";
+                accessible-label: "Clear clipboard history";
+                clicked => { root.clear-requested(); }
+            }
+        }
+
+        VerticalBox {
+            height: 368px;
+            spacing: 4px;
+            ClipboardRow {
+                item-title: root.item-1-title;
+                item-subtitle: root.item-1-subtitle;
+                item-visible: root.item-1-visible;
+                item-pinned: root.item-1-pinned;
+                item-copyable: root.item-1-copyable;
+                activated => { root.item-activated(0); }
+                copy-requested => { root.item-copy-requested(0); }
+                pin-requested => { root.item-pin-requested(0); }
+            }
+            ClipboardRow {
+                item-title: root.item-2-title;
+                item-subtitle: root.item-2-subtitle;
+                item-visible: root.item-2-visible;
+                item-pinned: root.item-2-pinned;
+                item-copyable: root.item-2-copyable;
+                activated => { root.item-activated(1); }
+                copy-requested => { root.item-copy-requested(1); }
+                pin-requested => { root.item-pin-requested(1); }
+            }
+            ClipboardRow {
+                item-title: root.item-3-title;
+                item-subtitle: root.item-3-subtitle;
+                item-visible: root.item-3-visible;
+                item-pinned: root.item-3-pinned;
+                item-copyable: root.item-3-copyable;
+                activated => { root.item-activated(2); }
+                copy-requested => { root.item-copy-requested(2); }
+                pin-requested => { root.item-pin-requested(2); }
+            }
+            ClipboardRow {
+                item-title: root.item-4-title;
+                item-subtitle: root.item-4-subtitle;
+                item-visible: root.item-4-visible;
+                item-pinned: root.item-4-pinned;
+                item-copyable: root.item-4-copyable;
+                activated => { root.item-activated(3); }
+                copy-requested => { root.item-copy-requested(3); }
+                pin-requested => { root.item-pin-requested(3); }
+            }
+            ClipboardRow {
+                item-title: root.item-5-title;
+                item-subtitle: root.item-5-subtitle;
+                item-visible: root.item-5-visible;
+                item-pinned: root.item-5-pinned;
+                item-copyable: root.item-5-copyable;
+                activated => { root.item-activated(4); }
+                copy-requested => { root.item-copy-requested(4); }
+                pin-requested => { root.item-pin-requested(4); }
+            }
+            ClipboardRow {
+                item-title: root.item-6-title;
+                item-subtitle: root.item-6-subtitle;
+                item-visible: root.item-6-visible;
+                item-pinned: root.item-6-pinned;
+                item-copyable: root.item-6-copyable;
+                activated => { root.item-activated(5); }
+                copy-requested => { root.item-copy-requested(5); }
+                pin-requested => { root.item-pin-requested(5); }
+            }
+            ClipboardRow {
+                item-title: root.item-7-title;
+                item-subtitle: root.item-7-subtitle;
+                item-visible: root.item-7-visible;
+                item-pinned: root.item-7-pinned;
+                item-copyable: root.item-7-copyable;
+                activated => { root.item-activated(6); }
+                copy-requested => { root.item-copy-requested(6); }
+                pin-requested => { root.item-pin-requested(6); }
+            }
+            ClipboardRow {
+                item-title: root.item-8-title;
+                item-subtitle: root.item-8-subtitle;
+                item-visible: root.item-8-visible;
+                item-pinned: root.item-8-pinned;
+                item-copyable: root.item-8-copyable;
+                activated => { root.item-activated(7); }
+                copy-requested => { root.item-copy-requested(7); }
+                pin-requested => { root.item-pin-requested(7); }
+            }
+        }
+
+        Rectangle {
+            height: 150px;
+            background: #eef3fb;
+            border-radius: 6px;
+            accessible-role: groupbox;
+            accessible-label: "Clipboard preview";
+            VerticalBox {
+                padding: 12px;
+                spacing: 6px;
+                Text {
+                    text: root.preview-kind;
+                    color: #4e6280;
+                    accessible-label: "Clipboard preview type";
+                }
+                Text {
+                    text: root.preview-text;
+                    color: #25334b;
+                    wrap: word-wrap;
+                    overflow: elide;
+                    accessible-label: "Clipboard preview content";
+                }
+            }
+        }
+
+        HorizontalBox {
+            height: 28px;
+            spacing: 12px;
+            Text {
+                text: root.status-text;
+                color: #5e6670;
+                accessible-label: "Clipboard history status";
+            }
+            Button {
+                width: 100px;
+                text: "Close";
+                accessible-label: "Close clipboard history";
+                clicked => { root.dismiss-requested(); }
+            }
+        }
+    }
+}
+
+export component PetWindow inherits Window {
+    in-out property <string> pet-label: "N";
+    in-out property <string> frame-asset: "builtin://nova/idle";
+    in-out property <image> pet-image;
+    in-out property <bool> shelf-visible: false;
+    in-out property <string> shelf-label: "No pinned actions";
+    in-out property <string> shelf-action-1: "";
+    in-out property <string> shelf-action-2: "";
+    in-out property <string> shelf-action-3: "";
+    in-out property <string> shelf-action-4: "";
+    in-out property <string> shelf-action-5: "";
+    in-out property <bool> shelf-action-1-visible: false;
+    in-out property <bool> shelf-action-2-visible: false;
+    in-out property <bool> shelf-action-3-visible: false;
+    in-out property <bool> shelf-action-4-visible: false;
+    in-out property <bool> shelf-action-5-visible: false;
+    callback pet-clicked();
+    callback shelf-action-clicked(int);
+    callback pet-drag-started();
+    callback pet-drag-moved(length, length);
+    callback pet-drag-ended();
+
+    width: 360px;
+    height: 160px;
+    title: "NovaHub Pet";
+    background: transparent;
+    no-frame: true;
+    always-on-top: true;
+    resize-border-width: 0px;
+
+    Rectangle {
+        x: 12px;
+        y: 12px;
+        width: 72px;
+        height: 72px;
+        border-radius: 36px;
+        background: #2f6fed;
+
+        Image {
+            width: 72px;
+            height: 72px;
+            source: root.pet-image;
+            image-fit: contain;
+            accessible-label: "NovaHub pet artwork";
+        }
+
+        Text {
+            width: 72px;
+            height: 72px;
+            text: root.pet-label;
+            color: white;
+            font-size: 28px;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            accessible-label: "NovaHub desktop pet";
+        }
+
+        TouchArea {
+            pointer-event(event) => {
+                if (event.button == PointerEventButton.left) {
+                    if (event.kind == PointerEventKind.down) {
+                        root.pet-drag-started();
+                    } else if (event.kind == PointerEventKind.move) {
+                        root.pet-drag-moved(self.mouse-x - self.pressed-x, self.mouse-y - self.pressed-y);
+                    } else if (event.kind == PointerEventKind.up) {
+                        root.pet-drag-ended();
+                    }
+                }
+            }
+            clicked => { root.pet-clicked(); }
+        }
+    }
+
+    Rectangle {
+        x: 4px;
+        y: 82px;
+        width: 344px;
+        height: 62px;
+        visible: root.shelf-visible;
+        background: #202a3b;
+        border-radius: 6px;
+
+        Text {
+            x: 6px;
+            y: 4px;
+            width: 140px;
+            height: 20px;
+            text: root.shelf-label;
+            color: white;
+            font-size: 11px;
+            overflow: elide;
+            accessible-label: "Pet action shelf";
+        }
+
+        Button {
+            x: 6px;
+            y: 30px;
+            width: 62px;
+            height: 24px;
+            visible: root.shelf-action-1-visible;
+            text: root.shelf-action-1;
+            clicked => { root.shelf-action-clicked(0); }
+        }
+
+        Button {
+            x: 74px;
+            y: 30px;
+            width: 62px;
+            height: 24px;
+            visible: root.shelf-action-2-visible;
+            text: root.shelf-action-2;
+            clicked => { root.shelf-action-clicked(1); }
+        }
+
+        Button {
+            x: 142px;
+            y: 30px;
+            width: 62px;
+            height: 24px;
+            visible: root.shelf-action-3-visible;
+            text: root.shelf-action-3;
+            clicked => { root.shelf-action-clicked(2); }
+        }
+
+        Button {
+            x: 210px;
+            y: 30px;
+            width: 62px;
+            height: 24px;
+            visible: root.shelf-action-4-visible;
+            text: root.shelf-action-4;
+            clicked => { root.shelf-action-clicked(3); }
+        }
+
+        Button {
+            x: 278px;
+            y: 30px;
+            width: 62px;
+            height: 24px;
+            visible: root.shelf-action-5-visible;
+            text: root.shelf-action-5;
+            clicked => { root.shelf-action-clicked(4); }
+        }
+    }
+}
+
+export component TrayIcon inherits SystemTrayIcon {
+    in property <image> tray-image;
+    callback show-shell-requested();
+    callback show-pet-requested();
+    callback hide-pet-requested();
+    callback quit-requested();
+
+    icon: root.tray-image;
+    title: "NovaHub";
+    tooltip: "NovaHub";
+    visible: true;
+
+    Menu {
+        MenuItem {
+            title: "Show NovaHub";
+            activated => { root.show-shell-requested(); }
+        }
+        MenuItem {
+            title: "Show Pet";
+            activated => { root.show-pet-requested(); }
+        }
+        MenuItem {
+            title: "Hide Pet";
+            activated => { root.hide-pet-requested(); }
+        }
+        MenuSeparator {}
+        MenuItem {
+            title: "Quit NovaHub";
+            activated => { root.quit-requested(); }
+        }
+    }
+}

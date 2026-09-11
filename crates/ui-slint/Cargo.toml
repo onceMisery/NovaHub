@@ -1,0 +1,17 @@
+[package]
+name = "novahub-ui-slint"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-core-domain = { path = "../core-domain" }
+novahub-ui-protocol = { path = "../ui-protocol" }
+slint = { version = "1.17.1", default-features = true, features = ["unstable-winit-030"] }
+
+[build-dependencies]
+slint-build = "1.17.1"
+
+[lints]
+workspace = true

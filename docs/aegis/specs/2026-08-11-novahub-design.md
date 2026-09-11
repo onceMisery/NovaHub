@@ -39,7 +39,7 @@ MVP 包括应用启动、计算器、剪贴板历史、基础文件搜索、系�
 
 ### 插件
 
-插件是 `.novahub-plugin` 归档，包含 `novahub.toml`、签名的 `plugin.wasm` 和资源。WIT Component 导出 `initialize/open/update/close`，返回固定的官方 View；所有 storage/http/clipboard/files 等能力默认拒绝且受权限清单约束。
+插件是 `.novahub-plugin` 归档，包含 `novahub.toml`、签名的 `plugin.wasm` 和资源。WIT Component 导出 `initialize/open-view/update/close-plugin`，返回固定的官方 View；所有 storage/http/clipboard/files 等能力默认拒绝且受权限清单约束。
 
 ### 生命周期
 
@@ -60,14 +60,17 @@ MVP 包括应用启动、计算器、剪贴板历史、基础文件搜索、系�
 | UI 方案 | 结论 |
 |---|---|
 | Slint + 官方声明式 View | MVP 采用，最符合内存、稳定和统一交互目标 |
-| Tauri/WebView | 仅当任意 HTML 是硬需求时重新评审 |
-| 原生双前端 | 仅在无障碍或平台体验证据否定 Slint 时评审 |
+| Tauri/WebView 主 Shell | 拒绝；不满足无浏览器运行时与低空闲内存目标，也不是 Slint 无障碍的局部 fallback |
+| 独立受限 WebView Host | 仅在量化的复杂编辑器需求与完整进程树资源预算同时成立后评审，不改变 WIT View 所有权 |
+| 原生语义/控件桥 | Slint 无障碍探针失败时的首选局部补强；核心流程仍失败则退回架构评审 |
 
 ## 验收标准
 
 - Windows/macOS 能完成快捷键、搜索、内置命令和插件调用主流程
-- 无插件活动时主进程 RSS P95 ≤ 70 MiB；插件 Host 按需启动并空闲回收
+- 无插件、无更新任务时完整 NovaHub 进程树 RSS P95 ≤ 70 MiB；插件 Host 按需启动并空闲回收
+- 一个与四个插件会话的完整进程树 RSS/私有工作集及 GPU/纹理内存在 Phase 0 实测并于 M1 前冻结发布上限
 - 插件超时、超限、Host 崩溃不拖垮主窗口
+- 纯计算使用 fuel/epoch 与 2 秒硬 deadline，宿主 IO 使用独立 deadline，慢 IO 不被误判为计算死循环
 - 安装、更新、禁用、卸载语义符合 `docs/04-plugin-platform.md`
 - 官方 UI 组件与 `docs/05-ui-ux-design.md` 的令牌、键盘和无障碍要求一致
 - 插件卸载默认删除插件本地数据并验证 `pending_delete` 重试路径

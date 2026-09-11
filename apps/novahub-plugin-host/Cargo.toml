@@ -1,0 +1,16 @@
+[package]
+name = "novahub-plugin-host"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-ipc = { path = "../../crates/ipc" }
+novahub-plugin-manager = { path = "../../crates/plugin-manager" }
+novahub-plugin-runtime = { path = "../../crates/plugin-runtime" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[lints]
+workspace = true

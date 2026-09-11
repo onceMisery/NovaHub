@@ -178,16 +178,16 @@ benches/desktop_pet.rs
 
 **Files:** `crates/ui-slint/src/pet_renderer.rs`、`crates/ui-slint/ui/pet.slint`、`plugins/official/pets/{waterman,nova,pixel}/`、`assets/pets/builtin/*`、资源 golden 测试。
 
-**Why:** 将声明式状态映射为稳定帧渲染，并交付 Waterman、Nova、Pixel 三个首发宠物。
+**Why:** 将声明式状态先映射为低资源静态关键帧，再在资源预算证据允许时启用帧动画，并交付 Waterman、Nova、Pixel 三个首发宠物。
 
 **Impact/Compatibility:** 只允许宿主安全资源子集；Waterman 原图必须先通过版权/许可证检查，不能引用用户图片绝对路径。
 
-**Verification:** `cargo test -p ui-slint pet_renderer`、截图快照和资源预算报告通过；无法确认版权时 Waterman 使用原创替代资源并保留相同 manifest。
+**Verification:** `cargo test -p ui-slint pet_renderer`、静态关键帧截图、关闭/静态/动画三场景资源报告和 12→6→静态降级测试通过；无法确认版权时 Waterman 使用原创替代资源并保留相同 manifest。
 
-- [ ] 写帧加载、缺失状态回退、减少动画、深浅主题、最大合法资源和版权资产检查测试。
+- [ ] 写静态关键帧、缺失状态回退、减少动画、深浅主题、最大合法资源、版权资产和“预算未通过时禁止启用帧动画”测试。
 - [ ] 运行 renderer 测试确认 RED。
-- [ ] 实现静态/帧动画、FPS 限制、声音默认关闭和三套资源 manifest。
-- [ ] 运行截图快照、内存/CPU采样和 `cargo test` 确认 GREEN。
+- [ ] 先实现静态关键帧、淡入淡出、声音默认关闭和三套资源 manifest；静态资源报告 GREEN 后才实现完整帧动画与 12→6→静态降级，未达标则静态路径即为交付形态。
+- [ ] 运行截图快照、关闭/静态/动画内存与 CPU 采样、降级测试和 `cargo test`，确认 GREEN。
 - [ ] 提交 `feat(pet): ship built-in Waterman Nova and Pixel pets`。
 
 ## Task 6：实现 Pet Action Shelf 与动作权限解析
@@ -248,7 +248,7 @@ benches/desktop_pet.rs
 
 **Verification:** `cargo test --workspace`、`cargo clippy --workspace --all-targets -- -D warnings`、宠物 E2E、安全扫描、Criterion/固定参考机采样和 Playwright 全量通过。
 
-- [ ] 写资源 fuzz、Host 崩溃、卸载清理、显示器热插拔、Narrator/VoiceOver、RSS/CPU/FPS 验收。
+- [ ] 写资源 fuzz、Host 崩溃、卸载清理、显示器热插拔、Narrator/VoiceOver、关闭/静态/动画 RSS/CPU/FPS 与 12→6→静态降级验收。
 - [ ] 运行全量检查，确认 RED 项目可追踪到具体任务。
 - [ ] 修复测试暴露的问题，保持宿主和契约的单一所有者。
 - [ ] 生成 Windows/macOS 核心报告、截图证据、版权记录和 Figma manifest 校验。

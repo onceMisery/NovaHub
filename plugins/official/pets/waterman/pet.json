@@ -1,0 +1,7 @@
+{
+  "petId": "waterman",
+  "displayName": "Waterman",
+  "fallbackPetId": "nova",
+  "frames": ["assets/waterman-idle.svg", "assets/waterman-success.svg"],
+  "recommendedActions": []
+}

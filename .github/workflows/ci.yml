@@ -1,0 +1,63 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-13, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-wasip2
+      - run: cargo fmt --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace -- --test-threads=1
+      - run: cargo run -p xtask -- capability-e2e
+      - run: cargo run -p xtask -- release-check
+
+  release-artifacts:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: rust
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-13, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip2
+      - name: Build release binaries
+        run: cargo build --release -p novahub-app -p novahub-plugin-host -p novahub-cli
+      - name: Package Unix artifact
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p dist/novahub
+          cp target/release/novahub-app dist/novahub/
+          cp target/release/novahub-plugin-host dist/novahub/
+          cp target/release/novahub-cli dist/novahub/novahub
+          cp README.md dist/novahub/
+          ditto -c -k --sequesterRsrc --keepParent dist/novahub dist/novahub-${{ matrix.os }}.zip
+      - name: Package Windows artifact
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist/novahub | Out-Null
+          Copy-Item target/release/novahub-app.exe dist/novahub/
+          Copy-Item target/release/novahub-plugin-host.exe dist/novahub/
+          Copy-Item target/release/novahub-cli.exe dist/novahub/novahub.exe
+          Copy-Item README.md dist/novahub/
+          Compress-Archive -Path dist/novahub -DestinationPath dist/novahub-${{ matrix.os }}.zip -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: novahub-${{ matrix.os }}
+          path: dist/novahub-${{ matrix.os }}.zip

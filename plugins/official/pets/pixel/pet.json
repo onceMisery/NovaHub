@@ -1,0 +1,7 @@
+{
+  "petId": "pixel",
+  "displayName": "Pixel",
+  "fallbackPetId": "nova",
+  "frames": ["assets/pixel-idle.svg", "assets/pixel-success.svg"],
+  "recommendedActions": []
+}

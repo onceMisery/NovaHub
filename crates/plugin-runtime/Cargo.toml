@@ -1,0 +1,14 @@
+[package]
+name = "novahub-plugin-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-plugin-manager = { path = "../plugin-manager" }
+wasmtime = { version = "47.0.3", default-features = false, features = ["cache", "component-model", "cranelift", "runtime", "wit-parser"] }
+wasmtime-wasi = { version = "47.0.3", default-features = false, features = ["p2"] }
+
+[lints]
+workspace = true

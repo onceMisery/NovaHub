@@ -1,0 +1,13 @@
+[package]
+name = "novahub-search"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-core-domain = { path = "../core-domain" }
+nucleo-matcher = "0.3.1"
+
+[lints]
+workspace = true

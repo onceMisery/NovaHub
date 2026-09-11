@@ -1,0 +1,21 @@
+[package]
+name = "novahub-platform-windows"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-platform-api = { path = "../api" }
+url = "2.5.7"
+
+[target.'cfg(windows)'.dependencies]
+arboard = { version = "3.6.1", default-features = false, features = ["windows-sys", "image-data"] }
+rfd = { version = "0.15.4", default-features = false }
+ureq = { version = "3.4.0", default-features = false, features = ["rustls"] }
+base64 = "0.22.1"
+getrandom = "0.3.4"
+keyring = { version = "4.1.6", default-features = false, features = ["v1", "windows-native-keyring-store"] }
+
+[lints]
+workspace = true

@@ -1,0 +1,13 @@
+[package]
+name = "novahub-sdk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-core-domain = { path = "../../crates/core-domain" }
+novahub-ui-protocol = { path = "../../crates/ui-protocol" }
+
+[lints]
+workspace = true

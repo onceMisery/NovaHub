@@ -1,0 +1,28 @@
+[package]
+name = "novahub-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+novahub-core-domain = { path = "../../crates/core-domain" }
+novahub-ipc = { path = "../../crates/ipc" }
+novahub-platform-api = { path = "../../crates/platform/api" }
+novahub-platform-macos = { path = "../../crates/platform/macos" }
+novahub-platform-windows = { path = "../../crates/platform/windows" }
+novahub-plugin-manager = { path = "../../crates/plugin-manager" }
+novahub-providers = { path = "../../crates/providers" }
+novahub-search = { path = "../../crates/search" }
+novahub-storage = { path = "../../crates/storage" }
+novahub-ui-slint = { path = "../../crates/ui-slint" }
+getrandom = "0.3.4"
+pinyin = { version = "0.11.0", default-features = false, features = ["plain"] }
+serde_json = "1"
+url = "2.5.7"
+
+[target.'cfg(any(windows, target_os = "macos"))'.dependencies]
+global-hotkey = "0.8.0"
+
+[lints]
+workspace = true

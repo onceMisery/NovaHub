@@ -1,0 +1,7 @@
+{
+  "items": [
+    {"kind":"quicklink","title":"NovaHub docs","content":"https://example.com"},
+    {"kind":"snippet","title":"Greeting","content":"Hello"},
+    {"kind":"script","title":"Rejected script","content":"echo unsafe"}
+  ]
+}

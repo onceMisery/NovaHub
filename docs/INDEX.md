@@ -20,13 +20,21 @@
 10. [Figma 原型规格与交付说明](10-figma-prototype.md)
 11. [V1 热门能力与现代化体验方案](11-v1-popular-tools-and-modern-experience.md)
 
+## 外部项目参考
+
+- [Kunkun 可借鉴设计与 NovaHub 落地建议（已采纳）](14-kunkun-reference-analysis.md)
+- [Kunkun 借鉴落地与 NovaHub MVP 清单](15-kunkun-mvp-adoption-checklist.md)
+
 ## Aegis 设计基线
 
 - [Aegis 工作区](aegis/README.md)
 - [总体设计规格](aegis/specs/2026-08-11-novahub-design.md)
 - [V1 热门能力设计规格](aegis/specs/2026-08-13-v1-popular-tools-design.md)
 - [V1 设计原型与实施计划](aegis/plans/2026-08-13-v1-design-and-implementation.md)
+- [低内存架构加固基线](aegis/baseline/2026-08-14-architecture-hardening-baseline.md)
+- [低内存架构加固计划](aegis/plans/2026-08-14-architecture-hardening.md)
+- [Kunkun 优点采纳设计规格](aegis/specs/2026-08-15-kunkun-design-adoption.md)
 
 ## 阅读顺序
 
-产品负责人建议按 1 → 2 → 11 → 9 阅读；架构与开发人员建议按 11 → 3 → 4 → 6 → 7 → 8 → 实施计划阅读；设计人员建议按 1 → 5 → 10 → 11 阅读。
+产品负责人建议按 1 → 2 → 11 → 9 阅读；架构与开发人员建议按 11 → 3 → 4 → Kunkun 参考分析 → 6 → 7 → 8 → 实施计划阅读；设计人员建议按 1 → 5 → 10 → 11 阅读。

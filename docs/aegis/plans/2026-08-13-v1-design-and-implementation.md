@@ -32,6 +32,7 @@
 - 不执行 uTools/Raycast 插件、脚本或私有 API，不导入凭据、剪贴板与云数据。
 - 现有 10 个原型 URL、`.novahub-plugin` 生命周期和默认删除语义保持兼容。
 - Windows/macOS 共享领域与 View 协议；平台差异只存在于 adapter/capability 层。
+- 核心 Shell 不引入 Tauri/WebView；Wasmtime 只进入按需 Plugin Host，`novahub-app` 不链接插件编译器或 SDK。
 
 ## Verification
 
@@ -78,28 +79,28 @@ V1 扩展了能力范围，但不新增协议所有者。影响扩展到 search/
 
 **Impact/Compatibility:** 只建立骨架，不实现产品能力；crate 名称和依赖方向必须匹配架构文档。
 
-**Verification:** `cargo metadata --no-deps` 成功；Windows CI 完整运行，macOS CI 至少编译与核心测试。
+**Verification:** `cargo metadata --no-deps` 成功；依赖图证明 `novahub-app` 不链接 Wasmtime/插件 SDK；Windows CI 完整运行，macOS CI 至少编译与核心测试。
 
-- [ ] 写一个架构测试，断言 `core-domain` 不依赖 Slint、Wasmtime、SQLite 或平台 crate。
+- [ ] 写架构测试，断言 `core-domain` 不依赖 Slint、Wasmtime、SQLite 或平台 crate，且 `novahub-app` 不依赖 `plugin-runtime`、Wasmtime 或插件 SDK。
 - [ ] 运行 `cargo test -p architecture-tests`，确认因工作区尚未建立而 RED。
-- [ ] 创建最小 workspace、crate manifest、共享 lint 与 MSRV/稳定工具链配置。
+- [ ] 创建最小 workspace、crate manifest、共享 lint 与稳定工具链配置；在 `rust-toolchain.toml`、`Cargo.lock` 和工具清单中固定精确版本。
 - [ ] 运行 `cargo fmt --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace`，确认 GREEN。
 - [ ] 提交 `build: establish NovaHub Rust workspace and CI gates`。
 
 ## Task 2：冻结领域、WIT、View 与 IPC 契约
 
-**Files:** 创建 `crates/core-domain/src/*`、`crates/ui-protocol/src/*`、`wit/novahub-plugin/*.wit`、`crates/ipc/proto/*.proto` 与对应测试。
+**Files:** 创建 `crates/core-domain/src/*`、`crates/ui-protocol/src/*`、`wit/novahub-plugin/*.wit`、`crates/ipc/proto/*.proto`、`tests/probes/plugin-host/*`、`benches/process-tree.rs` 与对应测试。
 
 **Why:** 先固定跨模块、跨进程与插件边界，避免各能力产生重复模型。
 
 **Impact/Compatibility:** 延续现有包格式与官方声明式 UI；给类型加字段只能是向后兼容 optional/default。
 
-**Verification:** WIT round-trip、Protobuf unknown-field、View 限额和 stable-ID 测试通过。
+**Verification:** WIT round-trip、SDK/WIT/Wasmtime 版本矩阵、Protobuf unknown-field、View 限额和 stable-ID 测试通过；最小跨进程探针记录 Host 冷启动、一个与四个组件会话的完整进程树基线。
 
-- [ ] 写 Query/Result/Action、View/Event、session lifecycle 和错误码的序列化/约束测试。
+- [ ] 写 Query/Result/Action、View/Event、session lifecycle、错误码、精确 WIT package SemVer、`plugin_api` range，以及一个/四个最小组件会话资源采样的序列化/约束测试。
 - [ ] 运行 `cargo test -p core-domain -p ui-protocol -p ipc`，确认缺少类型而 RED。
-- [ ] 实现最小领域模型、WIT world、生成绑定和有界 IPC envelope。
-- [ ] 重跑测试并执行 `cargo run -p xtask -- check-contracts`，确认 GREEN。
+- [ ] 实现最小领域模型、精确版本 WIT package、生成绑定、有界 IPC envelope 和非生产跨进程探针，并保存绑定可复现校验结果。
+- [ ] 重跑测试、`cargo run -p xtask -- check-contracts` 与进程树 benchmark，确认契约 GREEN，并冻结 M1 前使用的 Host 资源上限。
 - [ ] 提交 `feat: define core, view, WIT, and IPC contracts`。
 
 ## Task 3：扩展现代化确定性原型
@@ -126,28 +127,28 @@ V1 扩展了能力范围，但不新增协议所有者。影响扩展到 search/
 
 **Impact/Compatibility:** 颜色、间距、圆角与组件语义以 `docs/05` 和原型为准；不引入 WebView。
 
-**Verification:** Launcher/Tool/Manager 三种窗口快照匹配；键盘、焦点和语义树测试通过。
+**Verification:** 先通过 Windows/macOS Slint 探针，再验证 Launcher/Tool/Manager 三种窗口快照；键盘、焦点、语义树、虚拟列表和渲染资源基线通过。
 
-- [ ] 写 SearchInput、ResultRow、ActionPanel、Form、Dialog、Toast、Preview 和 ToolSplitView 的状态快照测试。
-- [ ] 运行 `cargo test -p ui-slint`，确认缺少组件而 RED。
-- [ ] 实现语义令牌、虚拟列表、Shell 状态机、主题/缩放/减少动画适配。
-- [ ] 重跑测试，并在 Windows Narrator 与 macOS VoiceOver smoke 流程验证 GREEN。
+- [ ] 写最小 SearchInput/ListView/Form/Dialog/ActionPanel 探针，以及 stable-ID 排序/增删/字段更新、Narrator/VoiceOver、200% 文本、候选渲染后端资源测试。
+- [ ] 运行 `cargo test -p ui-slint` 和两平台探针，确认缺少真实 Slint 语义/渲染实现而 RED。
+- [ ] 只实现最小探针并在两平台运行；探针 GREEN 后固定各平台渲染后端，失败则停止并退回架构评审。
+- [ ] 探针通过后实现语义令牌、虚拟列表、Shell 状态机、主题/缩放/减少动画和其余组件，再重跑快照、稳定 ID、Narrator/VoiceOver、首帧、帧时间、RSS 与 GPU/纹理内存测试，确认 GREEN。
 - [ ] 提交 `feat(ui): implement Slint foundations and shell`。
 
 ## Task 5：实现搜索协调器与 Provider 框架
 
-**Files:** 创建 `crates/search/src/{provider,coordinator,ranker,registry}.rs`、固定语料和 benchmark。
+**Files:** 创建 `crates/search/src/{provider,coordinator,ranker,registry,index_snapshot}.rs`、固定语料、`benches/search.rs` 与 `benches/startup.rs`。
 
 **Why:** 让多来源结果在低延迟下可取消、可合并且不打乱当前选择。
 
 **Impact/Compatibility:** 插件只注册静态 command descriptor，不参与每键动态查询。
 
-**Verification:** 旧 query 丢弃、慢源 Partial、stable-ID 选择和 P95 预算测试通过。
+**Verification:** 旧 query 丢弃、慢源 Partial、stable-ID 选择、索引冷/热恢复、首帧不等待索引和 P95 预算测试通过。
 
-- [ ] 写取消、deadline、流式首批、排序、固定项和 provider failure 测试。
+- [ ] 写取消、deadline、流式首批、排序、固定项、provider failure、索引版本失效和“首帧前不构建/全量加载 nucleo”测试。
 - [ ] 运行 `cargo test -p search`，确认 RED。
-- [ ] 实现有界通道协调器、`nucleo` 匹配、稳定合并与指标埋点。
-- [ ] 重跑测试与 `cargo bench -p search`，首批本地结果目标 GREEN。
+- [ ] 实现有界通道协调器、版本化索引快照后台恢复、`nucleo` 匹配、稳定合并与指标埋点；未就绪时返回 loading/partial，禁止每键 rebuild。
+- [ ] 重跑测试、`cargo bench -p search` 与启动 benchmark，确认首帧不等待索引且首批本地结果目标 GREEN。
 - [ ] 提交 `feat(search): add cancellable provider coordination and ranking`。
 
 ## Task 6：实现平台服务骨架与 Windows 完整适配
@@ -190,12 +191,12 @@ V1 扩展了能力范围，但不新增协议所有者。影响扩展到 search/
 
 **Impact/Compatibility:** 共享 Host 按需启动、60 秒空闲回收；UI 仍由宿主渲染；卸载默认删除所有插件本地所有物。
 
-**Verification:** 陷阱、超时、64 MiB、权限拒绝、Host 崩溃、原子更新、pending_delete 流程通过。
+**Verification:** 陷阱、计算/IO 双超时、64 MiB、跨插件干扰、认证 IPC、权限拒绝、Host 崩溃、原子更新、pending_delete 和完整进程树资源场景通过。
 
-- [ ] 写恶意/损坏组件、越权、更新失败和活跃卸载测试。
+- [ ] 写纯计算死循环、未超 IO deadline 的慢网络、插件 A 陷阱不影响插件 B、IPC 冒充/重放/乱序/断连、恶意/损坏组件、越权、更新失败和活跃卸载测试。
 - [ ] 运行 `cargo test -p plugin-runtime -p plugin-manager`，确认 RED。
-- [ ] 实现 Wasmtime Store limiter、epoch/fuel、capability broker、认证 IPC 与事务生命周期。
-- [ ] 重跑单元/跨进程 E2E，确认内置能力在 Host 崩溃后仍 GREEN。
+- [ ] 实现 Wasmtime Store limiter、epoch/fuel 纯计算预算、capability 级 IO deadline、capability broker、认证 IPC 与事务生命周期。
+- [ ] 重跑单元/跨进程 E2E，并采样 Host 基线、一个与四个会话、空闲回收后的完整进程树 RSS/私有工作集，确认隔离与资源门槛 GREEN。
 - [ ] 提交 `feat(plugins): add isolated runtime and transactional lifecycle`。
 
 ## Task 9：交付 5 个官方工具插件族
@@ -254,11 +255,11 @@ V1 扩展了能力范围，但不新增协议所有者。影响扩展到 search/
 
 **Impact/Compatibility:** Figma 配额不可用时不阻塞 RC；本地原型和 Slint 测试是源真值，Figma 是镜像交付。
 
-**Verification:** 全工作区、两平台核心 E2E、14 项矩阵、性能 P95、安装更新回滚与默认删除全部通过。
+**Verification:** 全工作区、两平台核心 E2E、14 项矩阵、完整进程树性能 P95、安装更新回滚与默认删除全部通过。
 
 - [ ] 先生成发布检查报告，确认缺失证据导致 gate RED。
 - [ ] 同步 Figma 三页或记录配额阻塞，并校验 manifest 中每个画板都有本地证据。
-- [ ] 修复全量测试、性能、无障碍、安全扫描和安装升级中发现的问题。
+- [ ] 修复全量测试、性能、无障碍、安全扫描和安装升级中发现的问题；资源报告必须分别列主进程、Host、完整进程树、私有工作集与可获取的 GPU/纹理内存。
 - [ ] 运行 `cargo run -p xtask -- release-check` 与平台安装包 smoke，确认全部工程 gate GREEN。
 - [ ] 提交 `release: prepare NovaHub V1 release candidate evidence`。
 
@@ -268,7 +269,7 @@ V1 扩展了能力范围，但不新增协议所有者。影响扩展到 search/
 
 | 里程碑 | 包含任务 | 退出条件 |
 |---|---|---|
-| M0 合同与探针 | 1–2 | 架构、WIT、IPC、CI 可运行 |
+| M0 合同与探针 | 1–2 + Task 4 前三步 | 架构、WIT、IPC、CI 可运行；两平台 Slint 无障碍/虚拟化/渲染后端与完整进程树基线成立 |
 | M1 体验与 Shell | 3–5 | 确定性原型与 Slint Shell、搜索预算通过 |
 | M2 Windows Alpha | 6–8 | 8 个内置能力与插件生命周期主流程通过 |
 | M3 工具迁移 Beta | 9–10 | 5 个插件族、Gallery、迁移报告与回滚通过 |

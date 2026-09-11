@@ -6,7 +6,21 @@ NovaHub 面向 Windows 与 macOS，使用 Rust 构建宿主、系统能力和插
 
 ## 当前阶段
 
-项目目前处于设计与实施准备阶段。总体架构和 V1 产品范围已经固定，V1 采用“能力对标 + 迁移辅助”：Windows 优先完整覆盖 14 项热门能力，macOS 首发覆盖核心能力，不直接运行 uTools/Raycast 插件。实现代码将按已落盘的独立实施计划推进。
+项目已进入可运行 MVP 实施阶段。当前主线是 Rust + Slint Shell、按需 sibling Plugin Host、WIT/WASM 插件、SQLite 本地数据和 Windows/macOS capability adapter；V1 的 14 项能力仍按“能力对标 + 迁移辅助”逐步扩展，不直接运行 uTools/Raycast 插件。
+
+本地验证入口：
+
+```text
+cargo test --workspace --offline -- --test-threads=1
+cargo run -p xtask --offline -- release-check
+cargo run -p xtask --offline -- build-examples
+NOVAHUB_HEADLESS=1 cargo run -p novahub-app --offline
+cargo run -p xtask --offline -- resource-report --pid <novahub-root-pid>
+```
+
+MVP 已覆盖宿主搜索、计算器、剪贴板策略、文件搜索及打开/定位/复制路径动作、系统命令确认、插件安装/更新/回滚/卸载、结构化权限与安装 diff、`view`/`one-shot` 命令路由、迁移 dry-run/事务导入、声明式 View、可切换的内置/自定义桌面宠物和真实 Wasmtime Component 往返。跨平台原生无障碍、签名安装器、权限 broker 实机矩阵和参考机资源指标仍由发布 CI/实机验收闭合。
+
+Shell 中可直接使用 `files <root> <query>` 搜索，使用 `files open <path>`、`files reveal <path>` 或 `files copy <path>` 处理结果；`copy <text>` 用于复制受限文本。桌面宠物可用 `pet list` 查看，使用 `pet use <id>` 激活内置或已安装的声明式宠物。
 
 ## 核心选择
 
@@ -19,6 +33,7 @@ NovaHub 面向 Windows 与 macOS，使用 Rust 构建宿主、系统能力和插
 - 官方声明式组件，不允许插件注入任意 HTML
 - 第三方插件仅在用户调用时运行
 - 插件卸载默认删除其本地数据与权限
+- 插件 SDK/CLI 提供 `view` 与 `one-shot` 两类模板；生产环境不保留 watcher 或 WebView
 
 ## 文档
 
@@ -32,4 +47,4 @@ V1 热门能力、现代化体验与迁移边界见 [docs/11-v1-popular-tools-an
 
 ## 方案状态
 
-这些文档是待评审的设计基线，不代表功能已经实现或达到发布状态。
+文档仍是架构与验收基线；代码已形成可运行 MVP，但不等同于跨平台 Release Candidate。发布前必须补齐平台实机、无障碍、签名安装器和完整进程树资源证据。

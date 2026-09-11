@@ -1,0 +1,7 @@
+{
+  "petId": "nova",
+  "displayName": "Nova",
+  "fallbackPetId": "nova",
+  "frames": ["assets/nova-idle.svg", "assets/nova-success.svg"],
+  "recommendedActions": []
+}

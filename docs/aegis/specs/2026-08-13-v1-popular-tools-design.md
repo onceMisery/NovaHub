@@ -67,11 +67,12 @@
 
 ## Performance Budgets
 
-- 宿主无 Plugin Host 闲置 RSS P95 ≤ 70 MiB。
+- 无插件、无更新任务时完整 NovaHub 进程树闲置 RSS P95 ≤ 70 MiB。
 - 热唤起到首帧 P95 ≤ 100 ms；输入到首批本地结果 P95 ≤ 50 ms。
 - 每个 Provider 有独立 deadline、结果上限与取消；慢源只产生 Partial 状态。
 - 剪贴板缩略图、文件预览和二维码图片都有字节预算并延迟解码。
 - Plugin Host 冷启动 P95 ≤ 500 ms，单插件默认线性内存 64 MiB。
+- 一个与四个插件会话的完整进程树 RSS/私有工作集及 GPU/纹理内存在 P0 实测，并在 M1 前冻结发布上限；64 MiB 是 Store 上限，不代表实际 RSS。
 
 ## Platform Rollout
 
@@ -81,16 +82,16 @@ Windows 是功能完整验收平台。macOS 从第一阶段即实现快捷键、
 
 - 领域与存储：Rust 单元/属性/迁移测试。
 - Provider：固定语料的排序、取消、超时和平台契约测试。
-- 插件：WIT conformance、资源限制、权限拒绝、Host 崩溃恢复。
+- 插件：WIT conformance、锁定版本矩阵、计算/IO 双超时、资源限制、跨插件干扰、权限拒绝、Host 崩溃恢复。
 - 迁移：公开样例与恶意/损坏输入语料、事务回滚、禁止执行测试。
-- UI：Slint 组件快照、键盘路径、主题、高对比度、200% 文本、减少动画。
+- UI：完整组件实现前先通过 Slint Narrator/VoiceOver、虚拟列表、稳定 ID 差量和渲染后端探针，再执行组件快照、键盘路径、主题、高对比度、200% 文本与减少动画验收。
 - E2E：Windows 全矩阵；macOS 核心矩阵；性能在固定参考机采样 P50/P95。
 
 ## Risks And Falsification
 
 | 假设 | 反证信号 | 处置 |
 |---|---|---|
-| Slint 可承载紧凑桌面 UI 与无障碍 | 核心流程无法通过 Narrator/VoiceOver | 先补原生语义适配；失败后评审局部原生控件 |
+| Slint 可承载紧凑桌面 UI 与无障碍 | Phase 0 核心流程无法通过 Narrator/VoiceOver 或虚拟列表预算 | 先补原生语义适配，必要时评审局部原生标准控件；仍失败则停止扩展并退回架构评审，不使用 Tauri/WebView fallback |
 | 系统文件索引足够 | 固定语料召回率或 P95 不达标 | 评审受控增量索引，不默认全盘扫描 |
 | 共享 Host 隔离足够 | 可复现跨插件干扰 | 高风险插件迁移独立进程并量化 RSS |
 | 迁移辅助能覆盖切换成本 | 20 个真实样本多数只能标记重写且无指导价值 | 增加静态迁移分析，不运行源插件 |

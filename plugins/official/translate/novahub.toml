@@ -1,0 +1,10 @@
+id = "official.translate"
+version = "0.1.0"
+host_api = ">=1.0, <2.0"
+permissions = ["http"]
+
+[[commands]]
+id = "translate.preview"
+title = "Translate text"
+subtitle = "Open the translation form"
+interaction = "view"

@@ -1,0 +1,175 @@
+package novahub:plugin@1.6.0;
+
+interface types {
+  record empty-view {
+    title: string,
+    description: string,
+  }
+
+  record resource-ref {
+    id: string,
+  }
+
+  record item-accessory {
+    status: string,
+    badge: string,
+    shortcut: string,
+    icon: option<resource-ref>,
+  }
+
+  record list-item {
+    id: string,
+    title: string,
+    subtitle: string,
+    accessory: option<item-accessory>,
+  }
+
+  record grid-item {
+    id: string,
+    title: string,
+    subtitle: string,
+    accessory: option<item-accessory>,
+  }
+
+  variant metadata-value {
+    text(string),
+    link(string),
+    tag(string),
+  }
+
+  record metadata {
+    key: string,
+    value: metadata-value,
+  }
+
+  enum form-control {
+    text,
+    password,
+    select,
+    checkbox,
+    switch,
+  }
+
+  record form-option {
+    id: string,
+    label: string,
+  }
+
+  record form-field {
+    id: string,
+    label: string,
+    control: form-control,
+    required: bool,
+    initial-value: string,
+    helper: string,
+    error: string,
+    options: list<form-option>,
+  }
+
+  enum action-role {
+    %default,
+    secondary,
+  }
+
+  record action-item {
+    id: string,
+    title: string,
+    role: action-role,
+    destructive: bool,
+  }
+
+  record list-view {
+    title: string,
+    items: list<list-item>,
+    next-cursor: option<string>,
+  }
+
+  record grid-view {
+    title: string,
+    items: list<grid-item>,
+    next-cursor: option<string>,
+  }
+
+  record detail-view {
+    title: string,
+    markdown: string,
+    metadata: list<metadata>,
+  }
+
+  record form-view {
+    title: string,
+    fields: list<form-field>,
+  }
+
+  record action-panel-view {
+    title: string,
+    actions: list<action-item>,
+  }
+
+  record loading-view {
+    title: string,
+    message: string,
+  }
+
+  record progress-view {
+    title: string,
+    completed: u64,
+    total: u64,
+  }
+
+  record error-view {
+    title: string,
+    message: string,
+    recoverable: bool,
+  }
+
+  record command-context {
+    command-id: string,
+    input: string,
+  }
+
+  record command-result {
+    text: string,
+    copy-text: option<string>,
+  }
+
+  variant view {
+    empty(empty-view),
+    loading(loading-view),
+    progress(progress-view),
+    error(error-view),
+    %list(list-view),
+    %grid(grid-view),
+    %detail(detail-view),
+    %form(form-view),
+    %action-panel(action-panel-view),
+  }
+}
+
+/// Host capabilities are imported only when a component uses them. The host
+/// broker rechecks identity and scope for every call; plugins never receive
+/// filesystem paths or an unrestricted network client.
+interface capabilities {
+  read-clipboard: func() -> result<string, string>;
+  write-clipboard: func(value: string) -> result<_, string>;
+  http-get: func(url: string) -> result<string, string>;
+  /// Opens the host file picker and returns an opaque session-bound token.
+  pick-file: func() -> result<option<string>, string>;
+  /// The token is opaque to the plugin. The App accepts it only when it was
+  /// issued by the host file picker for the current plugin/session.
+  read-file: func(token: string) -> result<string, string>;
+  storage-write: func(total-bytes: u64) -> result<_, string>;
+  storage-put: func(key: string, value: list<u8>) -> result<_, string>;
+  storage-get: func(key: string) -> result<list<u8>, string>;
+}
+
+world plugin {
+  use types.{command-context, command-result, view};
+  import capabilities;
+
+  export initialize: func() -> result<_, string>;
+  export open-view: func() -> result<view, string>;
+  export update: func(input: string) -> result<view, string>;
+  export close-plugin: func();
+  export run: func(context: command-context) -> result<command-result, string>;
+}
